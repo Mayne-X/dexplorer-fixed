@@ -209,3 +209,129 @@ export const safeStringify = (obj: unknown, space?: number): string => {
     space
   )
 }
+
+// Convert array of objects to CSV string
+export const convertToCSV = <T>(data: T[], headers?: Record<keyof T, string>): string => {
+  if (!data || data.length === 0) return ''
+
+  // Get column headers from first object or use provided headers
+  const keys = headers ? Object.keys(headers) : Object.keys(data[0] as object)
+  const headerRow = headers
+    ? keys.map((k) => headers[k as keyof T]).join(',')
+    : keys.join(',')
+
+  // Create data rows
+  const rows = data.map((item) => {
+    return keys.map((key) => {
+      const value = item[key as keyof T]
+      // Handle values that need quoting
+      if (typeof value === 'string' && (value.includes(',') || value.includes('"'))) {
+        return `"${value.replace(/"/g, '""')}"`
+      }
+      return String(value ?? '')
+    }).join(',')
+  })
+
+  return [headerRow, ...rows].join('\n')
+}
+
+// Download data as a file
+export const downloadData = (
+  data: string,
+  filename: string,
+  mimeType: string
+) => {
+  const blob = new Blob([data], { type: mimeType })
+  const url = URL.createObjectURL(blob)
+  const link = document.createElement('a')
+  link.href = url
+  link.download = filename
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+  URL.revokeObjectURL(url)
+}
+
+// Export transactions to CSV
+export const exportTransactionsToCSV = (
+  transactions: Array<{
+    hash: string
+    height: string
+    timestamp: string
+    result: { code: number; data: string | null }
+  }>
+) => {
+  const data = transactions.map((tx) => ({
+    hash: tx.hash,
+    height: tx.height,
+    timestamp: tx.timestamp,
+    status: tx.result.code === 0 ? 'success' : 'failed',
+  }))
+
+  const csv = convertToCSV(data, {
+    hash: 'Hash',
+    height: 'Block Height',
+    timestamp: 'Timestamp',
+    status: 'Status',
+  })
+
+  const filename = `transactions_${new Date().toISOString().split('T')[0]}.csv`
+  downloadData(csv, filename, 'text/csv')
+}
+
+// Export transactions to JSON
+export const exportTransactionsToJSON = (
+  transactions: Array<{
+    hash: string
+    height: string
+    timestamp: string
+    result: { code: number; data: string | null }
+  }>
+) => {
+  const data = transactions.map((tx) => ({
+    hash: tx.hash,
+    height: tx.height,
+    timestamp: tx.timestamp,
+    status: tx.result.code === 0 ? 'success' : 'failed',
+  }))
+
+  const json = safeStringify(data, 2)
+  const filename = `transactions_${new Date().toISOString().split('T')[0]}.json`
+  downloadData(json, filename, 'application/json')
+}
+
+// Export blocks to CSV
+export const exportBlocksToCSV = (
+  blocks: Array<{
+    header: { height: string; time: string }
+  }>
+) => {
+  const data = blocks.map((block) => ({
+    height: block.header.height,
+    timestamp: block.header.time,
+  }))
+
+  const csv = convertToCSV(data, {
+    height: 'Block Height',
+    timestamp: 'Timestamp',
+  })
+
+  const filename = `blocks_${new Date().toISOString().split('T')[0]}.csv`
+  downloadData(csv, filename, 'text/csv')
+}
+
+// Export blocks to JSON
+export const exportBlocksToJSON = (
+  blocks: Array<{
+    header: { height: string; time: string }
+  }>
+) => {
+  const data = blocks.map((block) => ({
+    height: block.header.height,
+    timestamp: block.header.time,
+  }))
+
+  const json = safeStringify(data, 2)
+  const filename = `blocks_${new Date().toISOString().split('T')[0]}.json`
+  downloadData(json, filename, 'application/json')
+}

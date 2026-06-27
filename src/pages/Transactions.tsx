@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import {
@@ -7,6 +7,9 @@ import {
   FiClock,
   FiUser,
   FiHash,
+  FiFilter,
+  FiX,
+  FiDownload,
 } from 'react-icons/fi'
 import { useTheme } from '@/theme/ThemeProvider'
 import {
@@ -14,11 +17,37 @@ import {
   timeFromNow,
   getTypeMsg,
   getActionFromAttributes,
+  exportTransactionsToCSV,
+  exportTransactionsToJSON,
 } from '@/utils/helper'
 import { RootState } from '@/store'
 import { selectTransactions } from '@/store/streamSlice'
 import SearchBar from '@/components/ui/SearchBar'
 import CopyText from '@/components/ui/CopyText'
+import { Button } from '@/components/ui/Button'
+
+// Transaction type options for filtering
+const TX_TYPES = [
+  { value: 'all', label: 'All Types' },
+  { value: 'Send', label: 'Send' },
+  { value: 'Delegate', label: 'Delegate' },
+  { value: 'Undelegate', label: 'Undelegate' },
+  { value: 'WithdrawDelegatorReward', label: 'Withdraw Rewards' },
+  { value: 'Vote', label: 'Vote' },
+  { value: 'SubmitProposal', label: 'Submit Proposal' },
+  { value: 'Deposit', label: 'Deposit' },
+  { value: 'Transfer', label: 'IBC Transfer' },
+  { value: 'Execute', label: 'Execute' },
+  { value: 'Grant', label: 'Grant' },
+  { value: 'Revoke', label: 'Revoke' },
+]
+
+// Status options for filtering
+const TX_STATUS = [
+  { value: 'all', label: 'All Status' },
+  { value: 'success', label: 'Success' },
+  { value: 'failed', label: 'Failed' },
+]
 
 const Transactions: React.FC = () => {
   const { colors } = useTheme()
@@ -26,12 +55,72 @@ const Transactions: React.FC = () => {
   const transactions = useSelector(selectTransactions)
   const { connectState } = useSelector((state: RootState) => state.connect)
 
+  // Filter state
+  const [typeFilter, setTypeFilter] = useState('all')
+  const [statusFilter, setStatusFilter] = useState('all')
+  const [searchHash, setSearchHash] = useState('')
+
+  // Check if any filters are active
+  const hasActiveFilters = typeFilter !== 'all' || statusFilter !== 'all' || searchHash !== ''
+
   // Helper function to get transaction status
   const getTransactionStatus = (
     result: { code: number } | null | undefined
   ): 'success' | 'failed' => {
     if (!result) return 'failed'
     return result.code === 0 ? 'success' : 'failed'
+  }
+
+  // Extract message type from transaction
+  const getTxType = (events: any[] | undefined): string => {
+    if (!events) return ''
+    const messages = events.filter((e) => {
+      if (e.type === 'message') {
+        return e.attributes.some((a: any) => a.key === 'action' && a.value)
+      }
+      return false
+    })
+    if (messages.length > 0) {
+      return getTypeMsg(getActionFromAttributes(messages[0].attributes))
+    }
+    return ''
+  }
+
+  // Filter transactions based on selected filters
+  const filteredTransactions = useMemo(() => {
+    let filtered = transactions
+
+    // Filter by type
+    if (typeFilter !== 'all') {
+      filtered = filtered.filter((tx) => {
+        const txType = getTxType(tx.result?.events)
+        return txType.toLowerCase().includes(typeFilter.toLowerCase())
+      })
+    }
+
+    // Filter by status
+    if (statusFilter !== 'all') {
+      filtered = filtered.filter((tx) => {
+        const status = getTransactionStatus(tx.result)
+        return status === statusFilter
+      })
+    }
+
+    // Filter by hash search
+    if (searchHash) {
+      filtered = filtered.filter((tx) =>
+        tx.hash.toLowerCase().includes(searchHash.toLowerCase())
+      )
+    }
+
+    return filtered
+  }, [transactions, typeFilter, statusFilter, searchHash])
+
+  // Clear all filters
+  const clearFilters = () => {
+    setTypeFilter('all')
+    setStatusFilter('all')
+    setSearchHash('')
   }
 
   const renderEventMessages = (
@@ -168,15 +257,128 @@ const Transactions: React.FC = () => {
         }}
       >
         <div className="mb-6">
-          <h2
-            className="text-lg font-semibold"
-            style={{ color: colors.text.primary }}
-          >
-            Recent Transactions
-          </h2>
-          <p className="text-sm mt-1" style={{ color: colors.text.secondary }}>
-            Latest transactions on the network
-          </p>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <h2
+                className="text-lg font-semibold"
+                style={{ color: colors.text.primary }}
+              >
+                Recent Transactions
+              </h2>
+              <p className="text-sm mt-1" style={{ color: colors.text.secondary }}>
+                Latest transactions on the network
+                {hasActiveFilters && (
+                  <span className="ml-2 text-xs" style={{ color: colors.primary }}>
+                    ({filteredTransactions.length} filtered)
+                  </span>
+                )}
+              </p>
+            </div>
+
+            {/* Filter Controls */}
+            <div className="flex flex-wrap items-center gap-2">
+              {/* Type Filter */}
+              <div className="relative">
+                <select
+                  value={typeFilter}
+                  onChange={(e) => setTypeFilter(e.target.value)}
+                  className="px-3 py-2 pr-8 rounded-lg text-sm appearance-none cursor-pointer"
+                  style={{
+                    backgroundColor: colors.surface,
+                    border: `1px solid ${colors.border.secondary}`,
+                    color: colors.text.primary,
+                  }}
+                >
+                  {TX_TYPES.map((type) => (
+                    <option key={type.value} value={type.value}>
+                      {type.label}
+                    </option>
+                  ))}
+                </select>
+                <FiFilter
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 pointer-events-none"
+                  style={{ color: colors.text.tertiary }}
+                />
+              </div>
+
+              {/* Status Filter */}
+              <div className="relative">
+                <select
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                  className="px-3 py-2 pr-8 rounded-lg text-sm appearance-none cursor-pointer"
+                  style={{
+                    backgroundColor: colors.surface,
+                    border: `1px solid ${colors.border.secondary}`,
+                    color: colors.text.primary,
+                  }}
+                >
+                  {TX_STATUS.map((status) => (
+                    <option key={status.value} value={status.value}>
+                      {status.label}
+                    </option>
+                  ))}
+                </select>
+                <FiActivity
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 pointer-events-none"
+                  style={{ color: colors.text.tertiary }}
+                />
+              </div>
+
+              {/* Hash Search */}
+              <input
+                type="text"
+                placeholder="Search by hash..."
+                value={searchHash}
+                onChange={(e) => setSearchHash(e.target.value)}
+                className="px-3 py-2 rounded-lg text-sm w-40"
+                style={{
+                  backgroundColor: colors.surface,
+                  border: `1px solid ${colors.border.secondary}`,
+                  color: colors.text.primary,
+                }}
+              />
+
+              {/* Clear Filters Button */}
+              {hasActiveFilters && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={clearFilters}
+                  className="text-xs"
+                >
+                  <FiX className="w-3 h-3 mr-1" />
+                  Clear
+                </Button>
+              )}
+
+              {/* Export Buttons */}
+              {filteredTransactions.length > 0 && (
+                <div className="flex items-center gap-1 border-l pl-2" style={{ borderColor: colors.border.secondary }}>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => exportTransactionsToCSV(filteredTransactions)}
+                    className="text-xs"
+                    title="Export to CSV"
+                  >
+                    <FiDownload className="w-3 h-3 mr-1" />
+                    CSV
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => exportTransactionsToJSON(filteredTransactions)}
+                    className="text-xs"
+                    title="Export to JSON"
+                  >
+                    <FiDownload className="w-3 h-3 mr-1" />
+                    JSON
+                  </Button>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
 
         <div className="overflow-x-auto">
@@ -231,7 +433,7 @@ const Transactions: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {transactions.slice(0, 20).map((tx, index) => {
+              {filteredTransactions.slice(0, 50).map((tx, index) => {
                 const status = getTransactionStatus(tx.result)
                 return (
                   <tr
@@ -316,7 +518,25 @@ const Transactions: React.FC = () => {
             </div>
           )}
 
-          {connectState && transactions.length === 0 && (
+          {connectState && filteredTransactions.length === 0 && transactions.length > 0 && hasActiveFilters && (
+            <div className="text-center py-12">
+              <FiFilter
+                className="w-12 h-12 mx-auto mb-4 opacity-50"
+                style={{ color: colors.text.tertiary }}
+              />
+              <p style={{ color: colors.text.secondary }}>
+                No transactions match your filters
+              </p>
+              <p
+                className="text-sm mt-1"
+                style={{ color: colors.text.tertiary }}
+              >
+                Try adjusting your filter criteria
+              </p>
+            </div>
+          )}
+
+          {connectState && transactions.length === 0 && !hasActiveFilters && (
             <div className="text-center py-12">
               <FiActivity
                 className="w-12 h-12 mx-auto mb-4 opacity-50"

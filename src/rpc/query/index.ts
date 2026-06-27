@@ -25,6 +25,56 @@ export async function getChainId(
   return client.getChainId()
 }
 
+export async function getNetworkStatus(
+  tmClient: Tendermint37Client
+): Promise<{
+  chainId: string
+  blockHeight: number
+  syncHeight: number
+  catchingUp: boolean
+  peered: number
+  latencies: { rpc: string; latency: string }[]
+}> {
+  // Get tendermint status for sync info
+  const status = await tmClient.status()
+  const { latestBlockHeight, syncInfo, catchingUp } = status
+  const chainId = status.nodeInfo.network
+
+  // Try to get peer count from the client
+  let peeredCount = 0
+  try {
+    // The WebsocketClient has a getPeers method in some versions
+    peeredCount = (tmClient as any).getPeers?.()?.length || status.validators?.length || 0
+  } catch {
+    peeredCount = status.validators?.length || 0
+  }
+
+  // Calculate approximate latency based on block time
+  let latency = '< 1s'
+  if (syncInfo.latestBlockTime && syncInfo.earliestBlockTime) {
+    const blockInterval =
+      (new Date(syncInfo.latestBlockTime).getTime() -
+        new Date(syncInfo.earliestBlockTime).getTime()) /
+      1000
+    if (blockInterval < 1) {
+      latency = '< 1s'
+    } else if (blockInterval < 5) {
+      latency = `${blockInterval.toFixed(1)}s`
+    } else {
+      latency = `${blockInterval.toFixed(1)}s`
+    }
+  }
+
+  return {
+    chainId,
+    blockHeight: latestBlockHeight,
+    syncHeight: latestBlockHeight,
+    catchingUp,
+    peered: peeredCount || status.validators?.length || 0,
+    latencies: [{ rpc: 'default', latency }],
+  }
+}
+
 export async function getValidators(
   tmClient: Tendermint37Client
 ): Promise<ValidatorsResponse> {

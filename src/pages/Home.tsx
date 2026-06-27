@@ -5,6 +5,8 @@ import { useHomeData } from '@/hooks/useHomeData'
 import StatCard from '@/components/Home/StatCard'
 import RecentBlocksCard from '@/components/Home/RecentBlocksCard'
 import QuickActionsCard from '@/components/Home/QuickActionsCard'
+import NetworkStatusCard from '@/components/Home/NetworkStatusCard'
+import BlockTimeChart from '@/components/Home/BlockTimeChart'
 
 const Home: React.FC = () => {
   const { colors } = useTheme()
@@ -15,6 +17,7 @@ const Home: React.FC = () => {
     totalTransactions,
     blockTime,
     totalActiveValidator,
+    networkStatus,
   } = useHomeData()
 
   return (
@@ -73,11 +76,18 @@ const Home: React.FC = () => {
 
       {/* Recent Activity */}
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-        <div className="xl:col-span-2">
+        <div className="space-y-6">
           <RecentBlocksCard />
+          <BlockTimeChart />
         </div>
 
-        <div className="h-full">
+        <div className="space-y-6">
+          <NetworkStatusCard
+            isConnected={isConnected}
+            catchingUp={networkStatus.catchingUp}
+            syncedHeight={networkStatus.blockHeight}
+            peers={networkStatus.peers}
+          />
           <QuickActionsCard isConnected={isConnected} />
         </div>
       </div>
