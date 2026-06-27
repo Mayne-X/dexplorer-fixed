@@ -45,7 +45,10 @@ const Validators: React.FC = () => {
     () => [
       columnHelper.accessor('validator', {
         cell: (info) => (
-          <div className="flex items-center gap-2">
+          <Link
+            to={`/validators/${encodeURIComponent(info.row.original.identity || info.getValue())}`}
+            className="flex items-center gap-2 hover:opacity-70 transition-opacity"
+          >
             <ValidatorIcon
               moniker={info.getValue()}
               identity={info.row.original.identity}
@@ -57,7 +60,7 @@ const Validators: React.FC = () => {
             >
               {info.getValue()}
             </span>
-          </div>
+          </Link>
         ),
         header: () => (
           <div
