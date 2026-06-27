@@ -1,6 +1,6 @@
 import React from 'react'
 import { useTheme } from '@/theme/ThemeProvider'
-import { FiActivity, FiRefreshCw } from 'react-icons/fi'
+import { FiRefreshCw } from 'react-icons/fi'
 
 interface NetworkStatusCardProps {
   isConnected: boolean
@@ -49,8 +49,8 @@ const NetworkStatusCard: React.FC<NetworkStatusCardProps> = ({
                 backgroundColor: !isConnected
                   ? colors.status.error
                   : catchingUp
-                  ? colors.status.warning
-                  : colors.status.success,
+                    ? colors.status.warning
+                    : colors.status.success,
               }}
             ></div>
             <span
@@ -59,15 +59,15 @@ const NetworkStatusCard: React.FC<NetworkStatusCardProps> = ({
                 color: !isConnected
                   ? colors.status.error
                   : catchingUp
-                  ? colors.status.warning
-                  : colors.status.success,
+                    ? colors.status.warning
+                    : colors.status.success,
               }}
             >
               {!isConnected
                 ? 'Disconnected'
                 : catchingUp
-                ? 'Syncing...'
-                : 'Synced'}
+                  ? 'Syncing...'
+                  : 'Synced'}
             </span>
           </div>
         </div>
@@ -123,13 +123,18 @@ const NetworkStatusCard: React.FC<NetworkStatusCardProps> = ({
 
         {/* Consensus participation indicator */}
         {isConnected && (
-          <div className="flex items-center gap-2 pt-2 border-t" style={{ borderColor: colors.border.secondary }}>
+          <div
+            className="flex items-center gap-2 pt-2 border-t"
+            style={{ borderColor: colors.border.secondary }}
+          >
             <FiRefreshCw
               className="w-4 h-4"
               style={{ color: colors.status.success }}
             />
             <span className="text-xs" style={{ color: colors.text.tertiary }}>
-              {catchingUp ? 'Catching up to consensus' : 'Participating in consensus'}
+              {catchingUp
+                ? 'Catching up to consensus'
+                : 'Participating in consensus'}
             </span>
           </div>
         )}
