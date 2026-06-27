@@ -102,11 +102,17 @@ const serializeTransaction = (txEvent: TxEvent): SerializableTransaction => {
       gasUsed: txEvent.result.gasUsed.toString(),
       events: txEvent.result.events.map((e) => ({
         type: e.type,
-        attributes: e.attributes.map((a) => ({
-          key: ensureString(a.key),
-          value: ensureString(a.value),
-          index: (a as unknown as { index: boolean }).index,
-        })),
+        attributes: e.attributes.map((a) => {
+          // Type assertion needed because the Tendermint event attribute type
+          // doesn't expose 'index' field in its TypeScript definition, but it exists at runtime
+          // We use a type-safe check to verify the field exists before accessing it
+          const attrIndex = 'index' in a ? (a as { index: boolean }).index : false
+          return {
+            key: ensureString(a.key),
+            value: ensureString(a.value),
+            index: attrIndex,
+          }
+        }),
       })),
     },
     timestamp: new Date().toISOString(),

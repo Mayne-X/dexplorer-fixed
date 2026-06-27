@@ -239,14 +239,6 @@ const Transactions: React.FC = () => {
                     className="border-b hover:bg-opacity-50 transition-colors duration-200"
                     style={{
                       borderColor: colors.border.secondary,
-                      backgroundColor: 'transparent',
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor =
-                        colors.background + '50'
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = 'transparent'
                     }}
                   >
                     <td className="py-3 px-4">

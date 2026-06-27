@@ -13,18 +13,36 @@ export async function validateConnection(rpcAddress: string): Promise<boolean> {
     const wsUrl = replaceHTTPtoWebsocket(rpcAddress)
     const path = wsUrl.endsWith('/') ? 'websocket' : '/websocket'
     const socket = new StreamingSocket(wsUrl + path, 3000)
+
+    // Keep track of whether we've already resolved to prevent multiple callbacks
+    let resolved = false
+    const safeResolve = (value: boolean) => {
+      if (!resolved) {
+        resolved = true
+        resolve(value)
+      }
+    }
+
     socket.events.subscribe({
       error: () => {
-        resolve(false)
+        // Socket error occurred - clean up the socket and resolve false
+        socket.disconnect()
+        safeResolve(false)
       },
     })
 
     socket.connect()
     socket.connected
-      .then(() => resolve(true))
+      .then(() => {
+        // Connection successful but we only needed to verify connectivity
+        // Disconnect immediately to avoid keeping the socket open (memory leak)
+        socket.disconnect()
+        safeResolve(true)
+      })
       .catch((err) => {
         console.error('Connection validation failed:', err)
-        resolve(false)
+        socket.disconnect()
+        safeResolve(false)
       })
   })
 }

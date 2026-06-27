@@ -139,17 +139,31 @@ export default function Connect() {
 
       setState('success')
 
-      // Subscribe to events
-      const subsNewBlock = subscribeNewBlock(tmClient, (block) => {
-        dispatch(setNewBlock(block))
-        dispatch(addBlock(block))
-      })
+      // Subscribe to events with error handling so we can show user-friendly messages
+      const subsNewBlock = subscribeNewBlock(
+        tmClient,
+        (block) => {
+          dispatch(setNewBlock(block))
+          dispatch(addBlock(block))
+        },
+        (err) => {
+          console.error('Block subscription error:', err)
+          toast.error('Lost connection to block updates')
+        }
+      )
       setSubsNewBlock(subsNewBlock)
 
-      const subsTx = subscribeTx(tmClient, (tx) => {
-        dispatch(setTxEvent(tx))
-        dispatch(addTransaction(tx))
-      })
+      const subsTx = subscribeTx(
+        tmClient,
+        (tx) => {
+          dispatch(setTxEvent(tx))
+          dispatch(addTransaction(tx))
+        },
+        (err) => {
+          console.error('Transaction subscription error:', err)
+          toast.error('Lost connection to transaction updates')
+        }
+      )
       setSubsTxEvent(subsTx)
     } catch (e) {
       console.error(e)

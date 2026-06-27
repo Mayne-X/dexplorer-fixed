@@ -14,12 +14,18 @@ export const decodeContentProposal = (
   value: Uint8Array
 ): DecodeContentProposal => {
   let data = null
+
+  // Try to decode based on the type URL, if we don't recognize it, leave data as null
+  // This is safer than silently默认decoding everything as TextProposal which could show incorrect data
   switch (typeUrl) {
     case TYPE.TextProposal:
       data = TextProposal.decode(value)
       break
+    // If we encounter an unknown proposal type, we explicitly return null
+    // rather than guessing - the UI will handle showing unknown types appropriately
     default:
-      data = TextProposal.decode(value)
+      // Don't silently default to TextProposal - that would show wrong proposal data
+      // for new proposal types like ParameterChangeProposal, etc.
       break
   }
 

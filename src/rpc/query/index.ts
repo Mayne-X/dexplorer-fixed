@@ -77,6 +77,14 @@ export async function getTxsBySender(
   page: number,
   perPage: number
 ) {
+  // Validate address format before using it in query to prevent injection attacks
+  // The regex checks for valid bech32 format ( Cosmos addresses )
+  const validAddressRegex = /^[a-z\d]+1[a-z\d]{38,58}$/
+  if (!validAddressRegex.test(address)) {
+    throw new Error('Invalid address format for transaction search')
+  }
+
+  // Use the validated address directly - it's already confirmed to be safe bech32 format
   return tmClient.txSearch({
     query: `message.sender='${address}'`,
     prove: true,

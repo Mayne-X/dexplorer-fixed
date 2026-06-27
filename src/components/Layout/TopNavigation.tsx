@@ -171,16 +171,33 @@ const TopNavigation: React.FC<TopNavigationProps> = ({ onMenuClick }) => {
 
         console.log('Starting new subscriptions...')
 
-        // Start blockchain data subscriptions
-        const newBlockSub = subscribeNewBlock(tmClient, (event) => {
-          dispatch(setNewBlock(event))
-          dispatch(addBlock(event))
-        })
+        // Start blockchain data subscriptions with error handling
+        // If an error occurs, the onError callback will be triggered so we can notify the user
+        const newBlockSub = subscribeNewBlock(
+          tmClient,
+          (event) => {
+            dispatch(setNewBlock(event))
+            dispatch(addBlock(event))
+          },
+          (err) => {
+            // Subscription error - log it and notify user
+            console.error('Block subscription failed:', err)
+            toast.error('Block updates stopped. Please check your connection.')
+          }
+        )
 
-        const txSub = subscribeTx(tmClient, (event) => {
-          dispatch(setTxEvent(event))
-          dispatch(addTransaction(event))
-        })
+        const txSub = subscribeTx(
+          tmClient,
+          (event) => {
+            dispatch(setTxEvent(event))
+            dispatch(addTransaction(event))
+          },
+          (err) => {
+            // Subscription error - log it and notify user
+            console.error('Transaction subscription failed:', err)
+            toast.error('Transaction updates stopped. Please check your connection.')
+          }
+        )
 
         setSubsNewBlock(newBlockSub)
         setSubsTxEvent(txSub)
@@ -191,9 +208,18 @@ const TopNavigation: React.FC<TopNavigationProps> = ({ onMenuClick }) => {
         localStorage.setItem(LS_RPC_ADDRESS, cleanAddress)
 
         // Always save all RPC endpoints to localStorage
-        const currentList: string[] = JSON.parse(
-          localStorage.getItem(LS_RPC_ADDRESS_LIST) || '[]'
-        )
+        // Use try-catch because localStorage might contain corrupted JSON from a previous session
+        let currentList: string[] = []
+        try {
+          const stored = localStorage.getItem(LS_RPC_ADDRESS_LIST)
+          if (stored) {
+            currentList = JSON.parse(stored)
+          }
+        } catch (parseError) {
+          // If JSON is corrupted, start with a fresh list
+          console.warn('RPC list in localStorage was corrupted, starting fresh')
+          currentList = []
+        }
 
         let updatedList = [...currentList]
 
