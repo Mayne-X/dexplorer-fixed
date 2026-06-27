@@ -2,8 +2,6 @@ import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { selectTransactions } from '@/store/streamSlice'
 import { useClientStore } from '@/store/clientStore'
-import { trimHash } from '@/utils/helper'
-import { FiArrowRight, FiClock } from 'react-icons/fi'
 
 export interface IBCTransfer {
   hash: string

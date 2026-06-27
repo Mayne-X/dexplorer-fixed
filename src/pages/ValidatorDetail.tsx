@@ -13,9 +13,9 @@ import {
   FiLoader,
 } from 'react-icons/fi'
 import { useTheme } from '@/theme/ThemeProvider'
-import { queryActiveValidators, queryValidators, queryStakingPool } from '@/rpc/abci'
+import { queryActiveValidators, queryStakingPool } from '@/rpc/abci'
 import { useClientStore } from '@/store/clientStore'
-import { convertRateToPercent, convertVotingPower, trimHash } from '@/utils/helper'
+import { convertRateToPercent, convertVotingPower } from '@/utils/helper'
 import ValidatorIcon from '@/components/ValidatorIcon'
 import CopyText from '@/components/ui/CopyText'
 
@@ -83,7 +83,7 @@ const ValidatorDetail: React.FC = () => {
               minSelfDelegation: fallback.minSelfDelegation || '1',
               delegatorShares: fallback.delegatorShares || '0',
               unbondingHeight: fallback.unbondingHeight?.toString() || '0',
-              pubkey: fallback.pubKey?.type || 'N/A',
+              pubkey: 'N/A',
             })
           } else {
             setError('Validator not found')
@@ -102,7 +102,7 @@ const ValidatorDetail: React.FC = () => {
             minSelfDelegation: foundValidator.minSelfDelegation || '1',
             delegatorShares: foundValidator.delegatorShares || '0',
             unbondingHeight: foundValidator.unbondingHeight?.toString() || '0',
-            pubkey: foundValidator.pubKey?.type || 'N/A',
+            pubkey: 'N/A',
           })
         }
       } catch (err) {
@@ -135,7 +135,10 @@ const ValidatorDetail: React.FC = () => {
           >
             Home
           </Link>
-          <FiChevronRight className="w-4 h-4" style={{ color: colors.text.tertiary }} />
+          <FiChevronRight
+            className="w-4 h-4"
+            style={{ color: colors.text.tertiary }}
+          />
           <Link
             to="/validators"
             className="hover:opacity-70 transition-opacity font-medium"
@@ -143,7 +146,10 @@ const ValidatorDetail: React.FC = () => {
           >
             Validators
           </Link>
-          <FiChevronRight className="w-4 h-4" style={{ color: colors.text.tertiary }} />
+          <FiChevronRight
+            className="w-4 h-4"
+            style={{ color: colors.text.tertiary }}
+          />
           <span style={{ color: colors.text.primary }}>Not Found</span>
         </div>
 
@@ -154,17 +160,27 @@ const ValidatorDetail: React.FC = () => {
             border: `1px solid ${colors.border.primary}`,
           }}
         >
-          <FiXCircle className="w-16 h-16 mx-auto mb-4" style={{ color: colors.status.error }} />
-          <h2 className="text-xl font-semibold mb-2" style={{ color: colors.text.primary }}>
+          <FiXCircle
+            className="w-16 h-16 mx-auto mb-4"
+            style={{ color: colors.status.error }}
+          />
+          <h2
+            className="text-xl font-semibold mb-2"
+            style={{ color: colors.text.primary }}
+          >
             {error || 'Validator Not Found'}
           </h2>
           <p className="mb-6" style={{ color: colors.text.secondary }}>
-            The validator you're looking for doesn't exist or couldn't be loaded.
+            The validator you're looking for doesn't exist or couldn't be
+            loaded.
           </p>
           <Link
             to="/validators"
             className="inline-flex items-center gap-2 px-4 py-2 rounded-lg"
-            style={{ backgroundColor: colors.primary, color: colors.background }}
+            style={{
+              backgroundColor: colors.primary,
+              color: colors.background,
+            }}
           >
             Back to Validators
           </Link>
@@ -190,7 +206,10 @@ const ValidatorDetail: React.FC = () => {
         >
           Home
         </Link>
-        <FiChevronRight className="w-4 h-4" style={{ color: colors.text.tertiary }} />
+        <FiChevronRight
+          className="w-4 h-4"
+          style={{ color: colors.text.tertiary }}
+        />
         <Link
           to="/validators"
           className="hover:opacity-70 transition-opacity font-medium"
@@ -198,7 +217,10 @@ const ValidatorDetail: React.FC = () => {
         >
           Validators
         </Link>
-        <FiChevronRight className="w-4 h-4" style={{ color: colors.text.tertiary }} />
+        <FiChevronRight
+          className="w-4 h-4"
+          style={{ color: colors.text.tertiary }}
+        />
         <span style={{ color: colors.text.primary }}>{validator.moniker}</span>
       </div>
 
@@ -264,7 +286,10 @@ const ValidatorDetail: React.FC = () => {
               </a>
             )}
             {validator.details && (
-              <p className="mt-2 text-sm" style={{ color: colors.text.secondary }}>
+              <p
+                className="mt-2 text-sm"
+                style={{ color: colors.text.secondary }}
+              >
                 {validator.details}
               </p>
             )}
@@ -284,12 +309,21 @@ const ValidatorDetail: React.FC = () => {
           }}
         >
           <div className="flex items-center gap-2 mb-2">
-            <FiTrendingUp className="w-5 h-5" style={{ color: colors.status.info }} />
-            <span className="text-sm font-medium" style={{ color: colors.text.secondary }}>
+            <FiTrendingUp
+              className="w-5 h-5"
+              style={{ color: colors.status.info }}
+            />
+            <span
+              className="text-sm font-medium"
+              style={{ color: colors.text.secondary }}
+            >
               Voting Power
             </span>
           </div>
-          <p className="text-2xl font-bold" style={{ color: colors.text.primary }}>
+          <p
+            className="text-2xl font-bold"
+            style={{ color: colors.text.primary }}
+          >
             {convertVotingPower(validator.tokens)}
           </p>
           <p className="text-sm" style={{ color: colors.text.tertiary }}>
@@ -307,12 +341,21 @@ const ValidatorDetail: React.FC = () => {
           }}
         >
           <div className="flex items-center gap-2 mb-2">
-            <FiPercent className="w-5 h-5" style={{ color: colors.status.warning }} />
-            <span className="text-sm font-medium" style={{ color: colors.text.secondary }}>
+            <FiPercent
+              className="w-5 h-5"
+              style={{ color: colors.status.warning }}
+            />
+            <span
+              className="text-sm font-medium"
+              style={{ color: colors.text.secondary }}
+            >
               Commission
             </span>
           </div>
-          <p className="text-2xl font-bold" style={{ color: colors.text.primary }}>
+          <p
+            className="text-2xl font-bold"
+            style={{ color: colors.text.primary }}
+          >
             {validator.commission}
           </p>
           <p className="text-sm" style={{ color: colors.text.tertiary }}>
@@ -330,12 +373,21 @@ const ValidatorDetail: React.FC = () => {
           }}
         >
           <div className="flex items-center gap-2 mb-2">
-            <FiUser className="w-5 h-5" style={{ color: colors.status.success }} />
-            <span className="text-sm font-medium" style={{ color: colors.text.secondary }}>
+            <FiUser
+              className="w-5 h-5"
+              style={{ color: colors.status.success }}
+            />
+            <span
+              className="text-sm font-medium"
+              style={{ color: colors.text.secondary }}
+            >
               Delegator Shares
             </span>
           </div>
-          <p className="text-2xl font-bold" style={{ color: colors.text.primary }}>
+          <p
+            className="text-2xl font-bold"
+            style={{ color: colors.text.primary }}
+          >
             {convertVotingPower(validator.delegatorShares)}
           </p>
           <p className="text-sm" style={{ color: colors.text.tertiary }}>
@@ -354,11 +406,17 @@ const ValidatorDetail: React.FC = () => {
         >
           <div className="flex items-center gap-2 mb-2">
             <FiActivity className="w-5 h-5" style={{ color: colors.primary }} />
-            <span className="text-sm font-medium" style={{ color: colors.text.secondary }}>
+            <span
+              className="text-sm font-medium"
+              style={{ color: colors.text.secondary }}
+            >
               Status
             </span>
           </div>
-          <p className="text-2xl font-bold" style={{ color: colors.text.primary }}>
+          <p
+            className="text-2xl font-bold"
+            style={{ color: colors.text.primary }}
+          >
             {isActive ? 'Bonded' : 'Unbonded'}
           </p>
           <p className="text-sm" style={{ color: colors.text.tertiary }}>
@@ -378,31 +436,52 @@ const ValidatorDetail: React.FC = () => {
             boxShadow: colors.shadow.sm,
           }}
         >
-          <h3 className="text-lg font-semibold mb-4" style={{ color: colors.text.primary }}>
+          <h3
+            className="text-lg font-semibold mb-4"
+            style={{ color: colors.text.primary }}
+          >
             Validator Information
           </h3>
           <div className="space-y-4">
             <div className="flex justify-between items-center">
-              <span className="text-sm" style={{ color: colors.text.secondary }}>
+              <span
+                className="text-sm"
+                style={{ color: colors.text.secondary }}
+              >
                 Min Self Delegation
               </span>
-              <span className="font-medium" style={{ color: colors.text.primary }}>
+              <span
+                className="font-medium"
+                style={{ color: colors.text.primary }}
+              >
                 {validator.minSelfDelegation}
               </span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-sm" style={{ color: colors.text.secondary }}>
+              <span
+                className="text-sm"
+                style={{ color: colors.text.secondary }}
+              >
                 Unbonding Height
               </span>
-              <span className="font-medium" style={{ color: colors.text.primary }}>
+              <span
+                className="font-medium"
+                style={{ color: colors.text.primary }}
+              >
                 {validator.unbondingHeight}
               </span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-sm" style={{ color: colors.text.secondary }}>
+              <span
+                className="text-sm"
+                style={{ color: colors.text.secondary }}
+              >
                 PubKey Type
               </span>
-              <span className="font-medium" style={{ color: colors.text.primary }}>
+              <span
+                className="font-medium"
+                style={{ color: colors.text.primary }}
+              >
                 {validator.pubkey !== 'N/A' ? (
                   <CopyText
                     text={validator.pubkey}
@@ -425,7 +504,10 @@ const ValidatorDetail: React.FC = () => {
             boxShadow: colors.shadow.sm,
           }}
         >
-          <h3 className="text-lg font-semibold mb-4" style={{ color: colors.text.primary }}>
+          <h3
+            className="text-lg font-semibold mb-4"
+            style={{ color: colors.text.primary }}
+          >
             Security
           </h3>
           <div className="space-y-4">
@@ -434,7 +516,10 @@ const ValidatorDetail: React.FC = () => {
                 className="w-4 h-4"
                 style={{ color: colors.status.success }}
               />
-              <span className="text-sm" style={{ color: colors.text.secondary }}>
+              <span
+                className="text-sm"
+                style={{ color: colors.text.secondary }}
+              >
                 Validator signed last block
               </span>
             </div>
@@ -445,7 +530,10 @@ const ValidatorDetail: React.FC = () => {
                   style={{ color: colors.status.info }}
                 />
                 <div>
-                  <span className="text-sm" style={{ color: colors.text.secondary }}>
+                  <span
+                    className="text-sm"
+                    style={{ color: colors.text.secondary }}
+                  >
                     Keybase Identity
                   </span>
                   <a
@@ -473,12 +561,16 @@ const ValidatorDetail: React.FC = () => {
           boxShadow: colors.shadow.sm,
         }}
       >
-        <h3 className="text-lg font-semibold mb-2" style={{ color: colors.text.primary }}>
+        <h3
+          className="text-lg font-semibold mb-2"
+          style={{ color: colors.text.primary }}
+        >
           Delegator Info
         </h3>
         <p className="text-sm" style={{ color: colors.text.secondary }}>
-          To delegate or undelegate to this validator, please use a wallet application
-          like Keplr Wallet or Cosmostation. Dexplorer is a read-only block explorer.
+          To delegate or undelegate to this validator, please use a wallet
+          application like Keplr Wallet or Cosmostation. Dexplorer is a
+          read-only block explorer.
         </p>
       </div>
     </div>
