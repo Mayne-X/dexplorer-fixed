@@ -11,7 +11,11 @@ import {
   FiLink,
 } from 'react-icons/fi'
 import { useTheme } from '@/theme/ThemeProvider'
-import { useIBCTransfers, formatIBCChannel, formatIBCAmount } from '@/hooks/useIBCTransfers'
+import {
+  useIBCTransfers,
+  formatIBCChannel,
+  formatIBCAmount,
+} from '@/hooks/useIBCTransfers'
 import { useSelector } from 'react-redux'
 import { RootState } from '@/store'
 import CopyText from '@/components/ui/CopyText'
@@ -55,10 +59,7 @@ const IBCTransfers: React.FC = () => {
         }}
       >
         <div className="flex items-center gap-3 mb-2">
-          <FiLink
-            className="w-6 h-6"
-            style={{ color: colors.status.info }}
-          />
+          <FiLink className="w-6 h-6" style={{ color: colors.status.info }} />
           <h1
             className="text-2xl font-bold"
             style={{ color: colors.text.primary }}
@@ -82,12 +83,18 @@ const IBCTransfers: React.FC = () => {
           }}
         >
           <div className="flex items-center gap-2 mb-1">
-            <FiActivity className="w-5 h-5" style={{ color: colors.status.info }} />
+            <FiActivity
+              className="w-5 h-5"
+              style={{ color: colors.status.info }}
+            />
             <span className="text-sm" style={{ color: colors.text.secondary }}>
               Total Transfers
             </span>
           </div>
-          <p className="text-2xl font-bold" style={{ color: colors.text.primary }}>
+          <p
+            className="text-2xl font-bold"
+            style={{ color: colors.text.primary }}
+          >
             {ibcTransfers.length}
           </p>
         </div>
@@ -101,12 +108,18 @@ const IBCTransfers: React.FC = () => {
           }}
         >
           <div className="flex items-center gap-2 mb-1">
-            <FiCheckCircle className="w-5 h-5" style={{ color: colors.status.success }} />
+            <FiCheckCircle
+              className="w-5 h-5"
+              style={{ color: colors.status.success }}
+            />
             <span className="text-sm" style={{ color: colors.text.secondary }}>
               Successful
             </span>
           </div>
-          <p className="text-2xl font-bold" style={{ color: colors.text.primary }}>
+          <p
+            className="text-2xl font-bold"
+            style={{ color: colors.text.primary }}
+          >
             {ibcTransfers.filter((t) => t.status === 'success').length}
           </p>
         </div>
@@ -120,12 +133,18 @@ const IBCTransfers: React.FC = () => {
           }}
         >
           <div className="flex items-center gap-2 mb-1">
-            <FiXCircle className="w-5 h-5" style={{ color: colors.status.error }} />
+            <FiXCircle
+              className="w-5 h-5"
+              style={{ color: colors.status.error }}
+            />
             <span className="text-sm" style={{ color: colors.text.secondary }}>
               Failed
             </span>
           </div>
-          <p className="text-2xl font-bold" style={{ color: colors.text.primary }}>
+          <p
+            className="text-2xl font-bold"
+            style={{ color: colors.text.primary }}
+          >
             {ibcTransfers.filter((t) => t.status === 'failed').length}
           </p>
         </div>
@@ -166,9 +185,7 @@ const IBCTransfers: React.FC = () => {
               className="w-12 h-12 mx-auto mb-4 opacity-50"
               style={{ color: colors.text.tertiary }}
             />
-            <p style={{ color: colors.text.secondary }}>
-              No IBC transfers yet
-            </p>
+            <p style={{ color: colors.text.secondary }}>No IBC transfers yet</p>
             <p className="text-sm mt-1" style={{ color: colors.text.tertiary }}>
               IBC transfers will appear here when they occur on the network
             </p>
@@ -217,7 +234,10 @@ const IBCTransfers: React.FC = () => {
                     </span>
                   </div>
                   <div className="flex items-center gap-2 text-sm">
-                    <FiClock className="w-4 h-4" style={{ color: colors.text.tertiary }} />
+                    <FiClock
+                      className="w-4 h-4"
+                      style={{ color: colors.text.tertiary }}
+                    />
                     <span style={{ color: colors.text.secondary }}>
                       {new Date(transfer.timestamp).toLocaleString()}
                     </span>
@@ -227,7 +247,10 @@ const IBCTransfers: React.FC = () => {
                 {/* Sender and Receiver */}
                 <div className="flex items-center gap-3 mb-3">
                   <div className="flex-1 min-w-0">
-                    <span className="text-xs block" style={{ color: colors.text.tertiary }}>
+                    <span
+                      className="text-xs block"
+                      style={{ color: colors.text.tertiary }}
+                    >
                       From
                     </span>
                     <CopyText
@@ -244,7 +267,10 @@ const IBCTransfers: React.FC = () => {
                   />
 
                   <div className="flex-1 min-w-0">
-                    <span className="text-xs block" style={{ color: colors.text.tertiary }}>
+                    <span
+                      className="text-xs block"
+                      style={{ color: colors.text.tertiary }}
+                    >
                       To
                     </span>
                     <CopyText
@@ -259,50 +285,83 @@ const IBCTransfers: React.FC = () => {
                 {/* Channel Info */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-3">
                   <div>
-                    <span className="text-xs block" style={{ color: colors.text.tertiary }}>
+                    <span
+                      className="text-xs block"
+                      style={{ color: colors.text.tertiary }}
+                    >
                       Source Channel
                     </span>
-                    <span className="font-mono text-sm" style={{ color: colors.text.primary }}>
+                    <span
+                      className="font-mono text-sm"
+                      style={{ color: colors.text.primary }}
+                    >
                       {formatIBCChannel(transfer.sourceChannel)}
                     </span>
                   </div>
                   <div>
-                    <span className="text-xs block" style={{ color: colors.text.tertiary }}>
+                    <span
+                      className="text-xs block"
+                      style={{ color: colors.text.tertiary }}
+                    >
                       Source Port
                     </span>
-                    <span className="font-mono text-sm" style={{ color: colors.text.primary }}>
+                    <span
+                      className="font-mono text-sm"
+                      style={{ color: colors.text.primary }}
+                    >
                       {transfer.sourcePort || 'N/A'}
                     </span>
                   </div>
                   <div>
-                    <span className="text-xs block" style={{ color: colors.text.tertiary }}>
+                    <span
+                      className="text-xs block"
+                      style={{ color: colors.text.tertiary }}
+                    >
                       Dest Channel
                     </span>
-                    <span className="font-mono text-sm" style={{ color: colors.text.primary }}>
+                    <span
+                      className="font-mono text-sm"
+                      style={{ color: colors.text.primary }}
+                    >
                       {formatIBCChannel(transfer.destinationChannel)}
                     </span>
                   </div>
                   <div>
-                    <span className="text-xs block" style={{ color: colors.text.tertiary }}>
+                    <span
+                      className="text-xs block"
+                      style={{ color: colors.text.tertiary }}
+                    >
                       Dest Port
                     </span>
-                    <span className="font-mono text-sm" style={{ color: colors.text.primary }}>
+                    <span
+                      className="font-mono text-sm"
+                      style={{ color: colors.text.primary }}
+                    >
                       {transfer.destinationPort || 'N/A'}
                     </span>
                   </div>
                 </div>
 
                 {/* Amount and Hash */}
-                <div className="flex items-center justify-between pt-3 border-t" style={{ borderColor: colors.border.secondary }}>
+                <div
+                  className="flex items-center justify-between pt-3 border-t"
+                  style={{ borderColor: colors.border.secondary }}
+                >
                   <div>
                     {transfer.amount && transfer.denom && (
-                      <span className="text-sm font-medium" style={{ color: colors.text.primary }}>
+                      <span
+                        className="text-sm font-medium"
+                        style={{ color: colors.text.primary }}
+                      >
                         {formatIBCAmount(transfer.amount, transfer.denom)}
                       </span>
                     )}
                   </div>
                   <div className="flex items-center gap-2">
-                    <FiHash className="w-4 h-4" style={{ color: colors.text.tertiary }} />
+                    <FiHash
+                      className="w-4 h-4"
+                      style={{ color: colors.text.tertiary }}
+                    />
                     <Link
                       to={`/txs/${transfer.hash}`}
                       className="text-sm hover:underline font-mono"
@@ -315,11 +374,20 @@ const IBCTransfers: React.FC = () => {
 
                 {/* Memo */}
                 {transfer.memo && (
-                  <div className="mt-2 pt-2 border-t" style={{ borderColor: colors.border.secondary }}>
-                    <span className="text-xs" style={{ color: colors.text.tertiary }}>
+                  <div
+                    className="mt-2 pt-2 border-t"
+                    style={{ borderColor: colors.border.secondary }}
+                  >
+                    <span
+                      className="text-xs"
+                      style={{ color: colors.text.tertiary }}
+                    >
                       Memo:
                     </span>
-                    <span className="text-sm ml-2 font-mono" style={{ color: colors.text.secondary }}>
+                    <span
+                      className="text-sm ml-2 font-mono"
+                      style={{ color: colors.text.secondary }}
+                    >
                       {transfer.memo}
                     </span>
                   </div>

@@ -29,10 +29,12 @@ export const useHomeData = () => {
     blockHeight: number
     catchingUp: boolean
     peers: number
+    chainId: string
   }>({
     blockHeight: 0,
     catchingUp: false,
     peers: 0,
+    chainId: '',
   })
 
   const isConnected = connectState
@@ -59,6 +61,7 @@ export const useHomeData = () => {
           blockHeight: status.blockHeight,
           catchingUp: status.catchingUp,
           peers: status.peered,
+          chainId: status.chainId,
         })
       } catch (error) {
         console.error('Failed to fetch network status:', error)

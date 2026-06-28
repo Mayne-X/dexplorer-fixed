@@ -537,7 +537,7 @@ const ValidatorDetail: React.FC = () => {
                     Keybase Identity
                   </span>
                   <a
-                    href={`https://keybase.io/_/api/1.0/user/lookup.json?key_suffix=${validator.identity}`}
+                    href={`https://keybase.io/${encodeURIComponent(validator.identity)}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="block text-sm hover:underline"

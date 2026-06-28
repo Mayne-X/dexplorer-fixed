@@ -109,7 +109,10 @@ const BlockTimeChart: React.FC = () => {
             Block Time
           </h3>
         </div>
-        <div className="flex items-center justify-center h-48 text-sm" style={{ color: colors.text.tertiary }}>
+        <div
+          className="flex items-center justify-center h-48 text-sm"
+          style={{ color: colors.text.tertiary }}
+        >
           Need at least 2 blocks to show chart
         </div>
       </div>
@@ -137,7 +140,10 @@ const BlockTimeChart: React.FC = () => {
           </h3>
         </div>
         <div className="text-right">
-          <p className="text-2xl font-bold" style={{ color: colors.text.primary }}>
+          <p
+            className="text-2xl font-bold"
+            style={{ color: colors.text.primary }}
+          >
             {avgBlockTime}s
           </p>
           <p className="text-xs" style={{ color: colors.text.tertiary }}>
@@ -148,7 +154,11 @@ const BlockTimeChart: React.FC = () => {
 
       {/* SVG Chart */}
       <div className="overflow-hidden">
-        <svg width="100%" viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="xMidYMid meet">
+        <svg
+          width="100%"
+          viewBox={`0 0 ${width} ${height}`}
+          preserveAspectRatio="xMidYMid meet"
+        >
           {/* Grid lines */}
           {[0, 2, 4, 6].map((value) => (
             <g key={value}>
@@ -174,10 +184,7 @@ const BlockTimeChart: React.FC = () => {
           ))}
 
           {/* Area fill */}
-          <path
-            d={areaPath}
-            fill={colors.primary + '20'}
-          />
+          <path d={areaPath} fill={colors.primary + '20'} />
 
           {/* Line */}
           <path
@@ -201,26 +208,34 @@ const BlockTimeChart: React.FC = () => {
           ))}
 
           {/* X-axis labels (block heights) */}
-          {[0, Math.floor(blockTimeData.length / 2), blockTimeData.length - 1].map(
-            (index) => (
-              <text
-                key={index}
-                x={xScale(index)}
-                y={height - 8}
-                textAnchor="middle"
-                fontSize="10"
-                fill={colors.text.tertiary}
-              >
-                #{blockTimeData[index]?.height.toLocaleString()}
-              </text>
-            )
-          )}
+          {[
+            0,
+            Math.floor(blockTimeData.length / 2),
+            blockTimeData.length - 1,
+          ].map((index) => (
+            <text
+              key={index}
+              x={xScale(index)}
+              y={height - 8}
+              textAnchor="middle"
+              fontSize="10"
+              fill={colors.text.tertiary}
+            >
+              #{blockTimeData[index]?.height.toLocaleString()}
+            </text>
+          ))}
         </svg>
       </div>
 
       {/* Legend */}
-      <div className="flex items-center justify-center gap-4 mt-3 text-xs" style={{ color: colors.text.tertiary }}>
-        <span>Block height range: #{blockTimeData[0]?.height.toLocaleString()} - #{blockTimeData[blockTimeData.length - 1]?.height.toLocaleString()}</span>
+      <div
+        className="flex items-center justify-center gap-4 mt-3 text-xs"
+        style={{ color: colors.text.tertiary }}
+      >
+        <span>
+          Block height range: #{blockTimeData[0]?.height.toLocaleString()} - #
+          {blockTimeData[blockTimeData.length - 1]?.height.toLocaleString()}
+        </span>
       </div>
     </div>
   )

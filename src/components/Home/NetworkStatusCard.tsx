@@ -7,6 +7,7 @@ interface NetworkStatusCardProps {
   catchingUp?: boolean
   syncedHeight?: number
   peers?: number
+  chainId?: string
 }
 
 const NetworkStatusCard: React.FC<NetworkStatusCardProps> = ({
@@ -14,6 +15,7 @@ const NetworkStatusCard: React.FC<NetworkStatusCardProps> = ({
   catchingUp = false,
   syncedHeight = 0,
   peers = 0,
+  chainId = '',
 }) => {
   const { colors } = useTheme()
 
@@ -113,15 +115,14 @@ const NetworkStatusCard: React.FC<NetworkStatusCardProps> = ({
             Chain ID
           </span>
           <span
-            className="text-xs font-mono truncate max-w-[120px]"
+            className="text-xs font-mono truncate max-w-[180px]"
             style={{ color: colors.text.tertiary }}
-            title="Chain identifier"
+            title={isConnected ? chainId : undefined}
           >
-            {isConnected ? 'Connected' : 'N/A'}
+            {isConnected && chainId ? chainId : 'N/A'}
           </span>
         </div>
 
-        {/* Consensus participation indicator */}
         {isConnected && (
           <div
             className="flex items-center gap-2 pt-2 border-t"

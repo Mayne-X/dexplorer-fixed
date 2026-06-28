@@ -31,72 +31,77 @@ export const useIBCTransfers = () => {
 
     setIsLoading(true)
 
-    // Filter transactions that contain IBC transfers
-    const transfers: IBCTransfer[] = []
+    // Defer processing so isLoading renders before blocking
+    const timer = setTimeout(() => {
+      // Filter transactions that contain IBC transfers
+      const transfers: IBCTransfer[] = []
 
-    for (const tx of transactions) {
-      try {
-        // Check for failed status
-        const isSuccess = tx.result.code === 0
+      for (const tx of transactions) {
+        try {
+          // Check for failed status
+          const isSuccess = tx.result.code === 0
 
-        // Look for IBC transfer events
-        const events = tx.result.events || []
-        let sender = ''
-        let receiver = ''
-        let sourceChannel = ''
-        let sourcePort = ''
-        let destinationChannel = ''
-        let destinationPort = ''
-        let amount = ''
-        let denom = ''
-        let memo = ''
+          // Look for IBC transfer events
+          const events = tx.result.events || []
+          let sender = ''
+          let receiver = ''
+          let sourceChannel = ''
+          let sourcePort = ''
+          let destinationChannel = ''
+          let destinationPort = ''
+          let amount = ''
+          let denom = ''
+          let memo = ''
 
-        // Extract IBC-related attributes from events
-        for (const event of events) {
-          for (const attr of event.attributes) {
-            const key = attr.key
-            const value = attr.value
+          // Extract IBC-related attributes from events
+          for (const event of events) {
+            for (const attr of event.attributes) {
+              const key = attr.key
+              const value = attr.value
 
-            if (key === 'sender') sender = value
-            if (key === 'receiver') receiver = value
-            if (key === 'source_channel') sourceChannel = value
-            if (key === 'source_port') sourcePort = value
-            if (key === 'destination_channel') destinationChannel = value
-            if (key === 'destination_port') destinationPort = value
-            if (key === 'amount') amount = value
-            if (key === 'denom') denom = value
-            if (key === 'memo') memo = value
+              if (key === 'sender') sender = value
+              if (key === 'receiver') receiver = value
+              if (key === 'source_channel') sourceChannel = value
+              if (key === 'source_port') sourcePort = value
+              if (key === 'destination_channel') destinationChannel = value
+              if (key === 'destination_port') destinationPort = value
+              if (key === 'amount') amount = value
+              if (key === 'denom') denom = value
+              if (key === 'memo') memo = value
+            }
           }
-        }
 
-        // If we have IBC transfer data, this is an IBC transaction
-        if (sourceChannel || sourcePort || sender || receiver) {
-          transfers.push({
-            hash: tx.hash,
-            height: tx.height,
-            timestamp: tx.timestamp,
-            sender,
-            receiver,
-            sourceChannel,
-            sourcePort,
-            destinationChannel,
-            destinationPort,
-            amount,
-            denom,
-            memo,
-            status: isSuccess ? 'success' : 'failed',
-          })
+          // If we have IBC transfer data, this is an IBC transaction
+          if (sourceChannel || sourcePort || sender || receiver) {
+            transfers.push({
+              hash: tx.hash,
+              height: tx.height,
+              timestamp: tx.timestamp,
+              sender,
+              receiver,
+              sourceChannel,
+              sourcePort,
+              destinationChannel,
+              destinationPort,
+              amount,
+              denom,
+              memo,
+              status: isSuccess ? 'success' : 'failed',
+            })
+          }
+        } catch (error) {
+          console.warn('Error parsing IBC transfer:', error)
         }
-      } catch (error) {
-        console.warn('Error parsing IBC transfer:', error)
       }
-    }
 
-    // Sort by height descending
-    transfers.sort((a, b) => parseInt(b.height) - parseInt(a.height))
+      // Sort by height descending
+      transfers.sort((a, b) => parseInt(b.height) - parseInt(a.height))
 
-    setIbcTransfers(transfers.slice(0, 100)) // Limit to 100 most recent
-    setIsLoading(false)
+      setIbcTransfers(transfers.slice(0, 100)) // Limit to 100 most recent
+      setIsLoading(false)
+    }, 0)
+
+    return () => clearTimeout(timer)
   }, [transactions, tmClient])
 
   return {

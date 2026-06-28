@@ -87,6 +87,7 @@ const Home: React.FC = () => {
             catchingUp={networkStatus.catchingUp}
             syncedHeight={networkStatus.blockHeight}
             peers={networkStatus.peers}
+            chainId={networkStatus.chainId}
           />
           <QuickActionsCard isConnected={isConnected} />
         </div>
