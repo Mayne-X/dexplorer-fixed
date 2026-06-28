@@ -16,7 +16,7 @@ export const decodeContentProposal = (
   let data = null
 
   // Try to decode based on the type URL, if we don't recognize it, leave data as null
-  // This is safer than silently默认decoding everything as TextProposal which could show incorrect data
+  // This is safer than silently decoding everything as TextProposal which could show incorrect data
   switch (typeUrl) {
     case TYPE.TextProposal:
       data = TextProposal.decode(value)
