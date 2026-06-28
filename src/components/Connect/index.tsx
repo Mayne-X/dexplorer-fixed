@@ -25,7 +25,6 @@ import { subscribeNewBlock, subscribeTx } from '@/rpc/subscribe'
 import { removeTrailingSlash } from '@/utils/helper'
 import { useClientStore } from '@/store/clientStore'
 import { config } from '@/config'
-import { toast } from 'sonner'
 
 const chainList = [
   {

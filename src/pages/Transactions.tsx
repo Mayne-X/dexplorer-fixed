@@ -61,8 +61,7 @@ const Transactions: React.FC = () => {
   const [searchHash, setSearchHash] = useState('')
 
   // Check if any filters are active
-  const hasActiveFilters =
-    typeFilter !== 'all' || statusFilter !== 'all' || searchHash !== ''
+  const hasActiveFilters = typeFilter !== 'all' || statusFilter !== 'all' || searchHash !== ''
 
   // Helper function to get transaction status
   const getTransactionStatus = (
@@ -72,25 +71,12 @@ const Transactions: React.FC = () => {
     return result.code === 0 ? 'success' : 'failed'
   }
 
-  // Transaction event attribute type
-  type TxAttribute = {
-    key: string
-    value: string
-    index?: boolean
-  }
-
-  // Transaction event type
-  type TxEvent = {
-    type: string
-    attributes: TxAttribute[]
-  }
-
   // Extract message type from transaction
-  const getTxType = (events: TxEvent[] | undefined): string => {
+  const getTxType = (events: any[] | undefined): string => {
     if (!events) return ''
     const messages = events.filter((e) => {
       if (e.type === 'message') {
-        return e.attributes.some((a) => a.key === 'action' && a.value)
+        return e.attributes.some((a: any) => a.key === 'action' && a.value)
       }
       return false
     })
@@ -279,16 +265,10 @@ const Transactions: React.FC = () => {
               >
                 Recent Transactions
               </h2>
-              <p
-                className="text-sm mt-1"
-                style={{ color: colors.text.secondary }}
-              >
+              <p className="text-sm mt-1" style={{ color: colors.text.secondary }}>
                 Latest transactions on the network
                 {hasActiveFilters && (
-                  <span
-                    className="ml-2 text-xs"
-                    style={{ color: colors.primary }}
-                  >
+                  <span className="ml-2 text-xs" style={{ color: colors.primary }}>
                     ({filteredTransactions.length} filtered)
                   </span>
                 )}
@@ -374,16 +354,11 @@ const Transactions: React.FC = () => {
 
               {/* Export Buttons */}
               {filteredTransactions.length > 0 && (
-                <div
-                  className="flex items-center gap-1 border-l pl-2"
-                  style={{ borderColor: colors.border.secondary }}
-                >
+                <div className="flex items-center gap-1 border-l pl-2" style={{ borderColor: colors.border.secondary }}>
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() =>
-                      exportTransactionsToCSV(filteredTransactions)
-                    }
+                    onClick={() => exportTransactionsToCSV(filteredTransactions)}
                     className="text-xs"
                     title="Export to CSV"
                   >
@@ -393,9 +368,7 @@ const Transactions: React.FC = () => {
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() =>
-                      exportTransactionsToJSON(filteredTransactions)
-                    }
+                    onClick={() => exportTransactionsToJSON(filteredTransactions)}
                     className="text-xs"
                     title="Export to JSON"
                   >
@@ -545,26 +518,23 @@ const Transactions: React.FC = () => {
             </div>
           )}
 
-          {connectState &&
-            filteredTransactions.length === 0 &&
-            transactions.length > 0 &&
-            hasActiveFilters && (
-              <div className="text-center py-12">
-                <FiFilter
-                  className="w-12 h-12 mx-auto mb-4 opacity-50"
-                  style={{ color: colors.text.tertiary }}
-                />
-                <p style={{ color: colors.text.secondary }}>
-                  No transactions match your filters
-                </p>
-                <p
-                  className="text-sm mt-1"
-                  style={{ color: colors.text.tertiary }}
-                >
-                  Try adjusting your filter criteria
-                </p>
-              </div>
-            )}
+          {connectState && filteredTransactions.length === 0 && transactions.length > 0 && hasActiveFilters && (
+            <div className="text-center py-12">
+              <FiFilter
+                className="w-12 h-12 mx-auto mb-4 opacity-50"
+                style={{ color: colors.text.tertiary }}
+              />
+              <p style={{ color: colors.text.secondary }}>
+                No transactions match your filters
+              </p>
+              <p
+                className="text-sm mt-1"
+                style={{ color: colors.text.tertiary }}
+              >
+                Try adjusting your filter criteria
+              </p>
+            </div>
+          )}
 
           {connectState && transactions.length === 0 && !hasActiveFilters && (
             <div className="text-center py-12">

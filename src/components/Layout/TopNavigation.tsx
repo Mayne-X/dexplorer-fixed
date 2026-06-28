@@ -195,9 +195,7 @@ const TopNavigation: React.FC<TopNavigationProps> = ({ onMenuClick }) => {
           (err) => {
             // Subscription error - log it and notify user
             console.error('Transaction subscription failed:', err)
-            toast.error(
-              'Transaction updates stopped. Please check your connection.'
-            )
+            toast.error('Transaction updates stopped. Please check your connection.')
           }
         )
 
@@ -217,7 +215,7 @@ const TopNavigation: React.FC<TopNavigationProps> = ({ onMenuClick }) => {
           if (stored) {
             currentList = JSON.parse(stored)
           }
-        } catch {
+        } catch (parseError) {
           // If JSON is corrupted, start with a fresh list
           console.warn('RPC list in localStorage was corrupted, starting fresh')
           currentList = []
