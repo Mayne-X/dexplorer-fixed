@@ -13,7 +13,6 @@ import {
   FiWifi,
   FiWifiOff,
   FiGithub,
-  FiLink,
 } from 'react-icons/fi'
 import { useSelector } from 'react-redux'
 import { RootState } from '@/store'
@@ -22,7 +21,6 @@ const navigation = [
   { name: 'Home', href: '/', icon: FiHome },
   { name: 'Blocks', href: '/blocks', icon: FiBox },
   { name: 'Transactions', href: '/txs', icon: FiActivity },
-  { name: 'IBC Transfers', href: '/ibc-transfers', icon: FiLink },
   { name: 'Validators', href: '/validators', icon: FiUsers },
   { name: 'Proposals', href: '/proposals', icon: FiFileText },
   { name: 'Accounts', href: '/accounts', icon: FiUser },

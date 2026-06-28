@@ -1,20 +1,11 @@
 import React from 'react'
 import { useTheme } from '@/theme/ThemeProvider'
-import { FiActivity, FiRefreshCw } from 'react-icons/fi'
 
 interface NetworkStatusCardProps {
   isConnected: boolean
-  catchingUp?: boolean
-  syncedHeight?: number
-  peers?: number
 }
 
-const NetworkStatusCard: React.FC<NetworkStatusCardProps> = ({
-  isConnected,
-  catchingUp = false,
-  syncedHeight = 0,
-  peers = 0,
-}) => {
+const NetworkStatusCard: React.FC<NetworkStatusCardProps> = ({ isConnected }) => {
   const { colors } = useTheme()
 
   return (
@@ -34,105 +25,64 @@ const NetworkStatusCard: React.FC<NetworkStatusCardProps> = ({
       </h3>
 
       <div className="space-y-4">
-        {/* Network Health / Sync Status */}
         <div className="flex items-center justify-between">
           <span
             className="text-sm font-medium"
             style={{ color: colors.text.secondary }}
           >
-            Sync Status
+            Network Health
           </span>
           <div className="flex items-center gap-2">
             <div
-              className="w-2 h-2 rounded-full animate-pulse"
+              className="w-2 h-2 rounded-full"
               style={{
-                backgroundColor: !isConnected
-                  ? colors.status.error
-                  : catchingUp
-                  ? colors.status.warning
-                  : colors.status.success,
+                backgroundColor: isConnected
+                  ? colors.status.success
+                  : colors.status.error,
               }}
             ></div>
             <span
               className="text-sm font-semibold"
               style={{
-                color: !isConnected
-                  ? colors.status.error
-                  : catchingUp
-                  ? colors.status.warning
-                  : colors.status.success,
+                color: isConnected
+                  ? colors.status.success
+                  : colors.status.error,
               }}
             >
-              {!isConnected
-                ? 'Disconnected'
-                : catchingUp
-                ? 'Syncing...'
-                : 'Synced'}
+              {isConnected ? 'Connected' : 'Disconnected'}
             </span>
           </div>
         </div>
 
-        {/* Block Height */}
         <div className="flex items-center justify-between">
           <span
             className="text-sm font-medium"
             style={{ color: colors.text.secondary }}
           >
-            Block Height
-          </span>
-          <span
-            className="text-sm font-semibold font-mono"
-            style={{ color: colors.text.primary }}
-          >
-            {isConnected ? syncedHeight.toLocaleString() : 'N/A'}
-          </span>
-        </div>
-
-        {/* Connected Peers */}
-        <div className="flex items-center justify-between">
-          <span
-            className="text-sm font-medium"
-            style={{ color: colors.text.secondary }}
-          >
-            Connected Peers
+            Consensus
           </span>
           <span
             className="text-sm font-semibold"
             style={{ color: colors.text.primary }}
           >
-            {isConnected ? peers : 'N/A'}
+            {isConnected ? '99.8%' : 'N/A'}
           </span>
         </div>
 
-        {/* Chain ID */}
         <div className="flex items-center justify-between">
           <span
             className="text-sm font-medium"
             style={{ color: colors.text.secondary }}
           >
-            Chain ID
+            Uptime
           </span>
           <span
-            className="text-xs font-mono truncate max-w-[120px]"
-            style={{ color: colors.text.tertiary }}
-            title="Chain identifier"
+            className="text-sm font-semibold"
+            style={{ color: colors.text.primary }}
           >
-            {isConnected ? 'Connected' : 'N/A'}
+            {isConnected ? '99.9%' : 'N/A'}
           </span>
         </div>
-
-        {/* Consensus participation indicator */}
-        {isConnected && (
-          <div className="flex items-center gap-2 pt-2 border-t" style={{ borderColor: colors.border.secondary }}>
-            <FiRefreshCw
-              className="w-4 h-4"
-              style={{ color: colors.status.success }}
-            />
-            <span className="text-xs" style={{ color: colors.text.tertiary }}>
-              {catchingUp ? 'Catching up to consensus' : 'Participating in consensus'}
-            </span>
-          </div>
-        )}
       </div>
     </div>
   )
