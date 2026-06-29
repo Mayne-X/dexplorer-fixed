@@ -2,6 +2,7 @@ import React, { FormEvent, ChangeEvent, useState, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { FiZap, FiCheck } from 'react-icons/fi'
 import { useTheme } from '@/theme/ThemeProvider'
+import { toast } from 'sonner'
 import { Button } from '@/components/ui/Button'
 import { setConnectState, setRPCAddress } from '@/store/connectSlice'
 import {
