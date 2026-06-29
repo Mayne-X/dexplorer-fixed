@@ -6,6 +6,12 @@
   "engines": {
     "node": ">=22.0.0"
   },
+  "pnpm": {
+    "overrides": {
+      "bn.js": "5.2.4",
+      "mdast-util-to-hast": "13.2.1"
+    }
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
