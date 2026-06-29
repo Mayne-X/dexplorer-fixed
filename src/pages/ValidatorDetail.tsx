@@ -42,6 +42,7 @@ const ValidatorDetail: React.FC = () => {
   const [poolTotal, setPoolTotal] = useState<string>('0')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [keybaseUsername, setKeybaseUsername] = useState<string | null>(null)
 
   useEffect(() => {
     if (!tmClient || !identity) return
@@ -115,6 +116,30 @@ const ValidatorDetail: React.FC = () => {
 
     fetchValidator()
   }, [tmClient, identity])
+
+  // Resolve Keybase identity to username
+  useEffect(() => {
+    if (!validator?.identity) return
+
+    let isMounted = true
+    const resolveUsername = async () => {
+      try {
+        const res = await fetch(
+          `https://keybase.io/_/api/1.0/user/lookup.json?key_suffix=${validator.identity}&fields=basics`
+        )
+        const data = await res.json()
+        if (isMounted && data?.them?.[0]?.basics?.username) {
+          setKeybaseUsername(data.them[0].basics.username)
+        }
+      } catch {
+        // Keybase API unavailable, show identity as plain text
+      }
+    }
+    resolveUsername()
+    return () => {
+      isMounted = false
+    }
+  }, [validator?.identity])
 
   if (loading) {
     return (
@@ -536,15 +561,24 @@ const ValidatorDetail: React.FC = () => {
                   >
                     Keybase Identity
                   </span>
-                  <a
-                    href={`https://keybase.io/${encodeURIComponent(validator.identity)}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block text-sm hover:underline"
-                    style={{ color: colors.primary }}
-                  >
-                    {validator.identity}
-                  </a>
+                  {keybaseUsername ? (
+                    <a
+                      href={`https://keybase.io/${encodeURIComponent(keybaseUsername)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block text-sm hover:underline"
+                      style={{ color: colors.primary }}
+                    >
+                      {keybaseUsername}
+                    </a>
+                  ) : (
+                    <span
+                      className="block text-sm"
+                      style={{ color: colors.text.secondary }}
+                    >
+                      {validator.identity}
+                    </span>
+                  )}
                 </div>
               </div>
             )}

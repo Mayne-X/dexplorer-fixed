@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import {
@@ -86,7 +86,7 @@ const Transactions: React.FC = () => {
   }
 
   // Extract message type from transaction
-  const getTxType = (events: TxEvent[] | undefined): string => {
+  const getTxType = useCallback((events: TxEvent[] | undefined): string => {
     if (!events) return ''
     const messages = events.filter((e) => {
       if (e.type === 'message') {
@@ -98,7 +98,7 @@ const Transactions: React.FC = () => {
       return getTypeMsg(getActionFromAttributes(messages[0].attributes))
     }
     return ''
-  }
+  }, [])
 
   // Filter transactions based on selected filters
   const filteredTransactions = useMemo(() => {
@@ -128,7 +128,7 @@ const Transactions: React.FC = () => {
     }
 
     return filtered
-  }, [transactions, typeFilter, statusFilter, searchHash])
+  }, [transactions, typeFilter, statusFilter, searchHash, getTxType])
 
   // Clear all filters
   const clearFilters = () => {

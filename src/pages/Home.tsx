@@ -6,7 +6,6 @@ import StatCard from '@/components/Home/StatCard'
 import RecentBlocksCard from '@/components/Home/RecentBlocksCard'
 import QuickActionsCard from '@/components/Home/QuickActionsCard'
 import NetworkStatusCard from '@/components/Home/NetworkStatusCard'
-import BlockTimeChart from '@/components/Home/BlockTimeChart'
 
 const Home: React.FC = () => {
   const { colors } = useTheme()
@@ -76,9 +75,8 @@ const Home: React.FC = () => {
 
       {/* Recent Activity */}
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-        <div className="space-y-6">
+        <div className="xl:col-span-2 space-y-6">
           <RecentBlocksCard />
-          <BlockTimeChart />
         </div>
 
         <div className="space-y-6">
@@ -89,7 +87,7 @@ const Home: React.FC = () => {
             peers={networkStatus.peers}
             chainId={networkStatus.chainId}
           />
-          <QuickActionsCard isConnected={isConnected} />
+          <QuickActionsCard />
         </div>
       </div>
     </div>
