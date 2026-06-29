@@ -386,6 +386,19 @@ Thanks to all the amazing people who have contributed to this project:
 
 - **[@arifintahu](https://github.com/arifintahu)** - Creator & Maintainer
 
+### Community Contributors
+
+<table>
+  <tr>
+    <td align="center">
+      <a href="https://github.com/Mayne-X">
+        <img src="https://github.com/Mayne-X.png" width="80" height="80" alt="@Mayne-X" /><br />
+        <sub><b>@Mayne-X</b></sub>
+      </a>
+    </td>
+  </tr>
+</table>
+
 ### How to Become a Contributor
 
 1. Fork the repository
