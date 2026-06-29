@@ -302,7 +302,7 @@ const Transactions: React.FC = () => {
                 <select
                   value={typeFilter}
                   onChange={(e) => setTypeFilter(e.target.value)}
-                  className="px-3 py-2 pr-8 rounded-lg text-sm appearance-none cursor-pointer"
+                  className="px-3 py-2 pr-8 rounded-lg text-sm appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
                   style={{
                     backgroundColor: colors.surface,
                     border: `1px solid ${colors.border.secondary}`,
@@ -326,7 +326,7 @@ const Transactions: React.FC = () => {
                 <select
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
-                  className="px-3 py-2 pr-8 rounded-lg text-sm appearance-none cursor-pointer"
+                  className="px-3 py-2 pr-8 rounded-lg text-sm appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
                   style={{
                     backgroundColor: colors.surface,
                     border: `1px solid ${colors.border.secondary}`,

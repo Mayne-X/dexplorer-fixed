@@ -160,33 +160,19 @@ const Sidebar: React.FC<SidebarProps> = ({
                       onClick={handleMobileLinkClick}
                       className={cn(
                         'group flex gap-x-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 relative font-ui',
-                        isActive ? '' : 'hover:translate-x-1'
+                        !isActive &&
+                          'hover:bg-[var(--color-background-secondary)] hover:text-[var(--color-text-primary)] hover:translate-x-1'
                       )}
                       style={{
                         backgroundColor: isActive
                           ? `${colors.primary}18`
-                          : 'transparent',
+                          : undefined,
                         color: isActive
                           ? colors.primary
                           : colors.text.secondary,
                         border: isActive
                           ? `1px solid ${colors.primary}30`
                           : '1px solid transparent',
-                      }}
-                      onMouseEnter={(e) => {
-                        if (!isActive) {
-                          e.currentTarget.style.backgroundColor =
-                            colors.backgroundSecondary
-                          e.currentTarget.style.color = colors.text.primary
-                          e.currentTarget.style.transform = 'translateX(4px)'
-                        }
-                      }}
-                      onMouseLeave={(e) => {
-                        if (!isActive) {
-                          e.currentTarget.style.backgroundColor = 'transparent'
-                          e.currentTarget.style.color = colors.text.secondary
-                          e.currentTarget.style.transform = 'translateX(0)'
-                        }
                       }}
                     >
                       {isActive && (
@@ -220,19 +206,8 @@ const Sidebar: React.FC<SidebarProps> = ({
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={handleMobileLinkClick}
-                    className="group flex gap-x-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 hover:translate-x-1"
-                    style={{
-                      color: colors.text.primary,
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor =
-                        colors.backgroundSecondary
-                      e.currentTarget.style.transform = 'translateX(4px)'
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = 'transparent'
-                      e.currentTarget.style.transform = 'translateX(0)'
-                    }}
+                    className="group flex gap-x-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 hover:translate-x-1 hover:bg-[var(--color-background-secondary)]"
+                    style={{ color: colors.text.primary }}
                   >
                     <item.icon className="h-5 w-5 shrink-0" />
                     {item.name}

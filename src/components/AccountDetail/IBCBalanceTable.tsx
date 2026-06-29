@@ -92,7 +92,7 @@ export default function IBCBalanceTable({ ibcTokens }: IBCBalanceTableProps) {
             <select
               value={itemsPerPage}
               onChange={(e) => handleItemsPerPageChange(Number(e.target.value))}
-              className="px-2 py-1 rounded text-sm border"
+              className="px-2 py-1 rounded text-sm border focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
               style={{
                 backgroundColor: colors.surface,
                 borderColor: colors.border.secondary,

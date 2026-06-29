@@ -51,6 +51,22 @@ body {
   background: rgba(245, 158, 11, 0.6);
 }
 
+/* Firefox scrollbar */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(180, 83, 9, 0.3) transparent;
+}
+
+html.dark {
+  scrollbar-color: rgba(245, 158, 11, 0.3) transparent;
+}
+
+/* Native select option theming */
+select option {
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+}
+
 /* Smooth transitions */
 * {
   transition:
@@ -75,9 +91,9 @@ body {
 
 /* CSS custom properties for theme colors */
 :root {
-  --primary-color-20: rgba(245, 158, 11, 0.2);
-  --accent-color: #8b5cf6;
-  --primary-color: #f59e0b;
+  --primary-color-20: rgba(180, 83, 9, 0.2);
+  --accent-color: #7c3aed;
+  --primary-color: #b45309;
 }
 
 .dark {

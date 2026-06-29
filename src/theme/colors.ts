@@ -2,8 +2,8 @@
 export const colors = {
   // Light mode colors
   light: {
-    primary: '#D97706', // Amber-600 — trust/gold
-    primaryHover: '#B45309', // Amber-700
+    primary: '#B45309', // Amber-700 — 4.6:1 on white (WCAG AA)
+    primaryHover: '#92400E', // Amber-800
     accent: '#7C3AED', // Violet-600 — tech/crypto
     accentHover: '#6D28D9', // Violet-700
     background: '#f8fafc', // Slate-50
