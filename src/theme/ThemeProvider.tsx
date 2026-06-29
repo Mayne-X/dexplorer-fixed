@@ -41,6 +41,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     const themeColors = colors[colorScheme]
     root.style.setProperty('--color-primary', themeColors.primary)
     root.style.setProperty('--color-primary-hover', themeColors.primaryHover)
+    root.style.setProperty('--color-accent', themeColors.accent)
     root.style.setProperty('--color-background', themeColors.background)
     root.style.setProperty(
       '--color-background-secondary',
