@@ -8,6 +8,7 @@ import {
   setTotalActiveValidator,
 } from '@/store/streamSlice'
 import { queryActiveValidators } from '@/rpc/abci'
+import { getNetworkStatus } from '@/rpc/query'
 import { useClientStore } from '@/store/clientStore'
 
 export const useHomeData = () => {
@@ -17,11 +18,24 @@ export const useHomeData = () => {
   const totalActiveValidator = useSelector(selectTotalActiveValidator)
   const persistentBlocks = useSelector(selectBlocks)
   const txEvent = useSelector(selectTxEvent)
-  
+
   // Count transactions - this counter resets to 0 whenever the client disconnects
   // We track the previous count so we can detect when txEvent actually increments
   const [totalTransactions, setTotalTransactions] = useState(0)
   const [blockTime, setBlockTime] = useState('--')
+
+  // Network status data
+  const [networkStatus, setNetworkStatus] = useState<{
+    blockHeight: number
+    catchingUp: boolean
+    peers: number
+    chainId: string
+  }>({
+    blockHeight: 0,
+    catchingUp: false,
+    peers: 0,
+    chainId: '',
+  })
 
   const isConnected = connectState
 
@@ -35,6 +49,31 @@ export const useHomeData = () => {
       setTotalTransactions(0)
     }
   }, [isConnected])
+
+  // Fetch network status when connected
+  useEffect(() => {
+    if (!tmClient) return
+
+    const fetchNetworkStatus = async () => {
+      try {
+        const status = await getNetworkStatus(tmClient)
+        setNetworkStatus({
+          blockHeight: status.blockHeight,
+          catchingUp: status.catchingUp,
+          peers: status.peered,
+          chainId: status.chainId,
+        })
+      } catch (error) {
+        console.error('Failed to fetch network status:', error)
+        // Keep default values on error
+      }
+    }
+
+    fetchNetworkStatus()
+    // Refresh network status every 10 seconds
+    const interval = setInterval(fetchNetworkStatus, 10000)
+    return () => clearInterval(interval)
+  }, [tmClient, isConnected])
 
   // Real blockchain data - get latest block from persistent blocks
   const latestBlock =
@@ -98,5 +137,6 @@ export const useHomeData = () => {
     totalTransactions,
     blockTime,
     totalActiveValidator,
+    networkStatus,
   }
 }

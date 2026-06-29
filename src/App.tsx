@@ -16,7 +16,9 @@ const queryClient = new QueryClient()
 const Home = lazy(() => import('@/pages/Home'))
 const Blocks = lazy(() => import('@/pages/Blocks'))
 const Validators = lazy(() => import('@/pages/Validators'))
+const ValidatorDetail = lazy(() => import('@/pages/ValidatorDetail'))
 const Transactions = lazy(() => import('@/pages/Transactions'))
+const IBCTransfers = lazy(() => import('@/pages/IBCTransfers'))
 const Proposals = lazy(() => import('@/pages/Proposals'))
 const Accounts = lazy(() => import('@/pages/Accounts'))
 const Parameters = lazy(() => import('@/pages/Parameters'))
@@ -52,10 +54,12 @@ function AppContent() {
             <Route path="/blocks" element={<Blocks />} />
             <Route path="/blocks/:height" element={<BlockDetail />} />
             <Route path="/validators" element={<Validators />} />
+            <Route path="/validators/:identity" element={<ValidatorDetail />} />
             <Route path="/proposals" element={<Proposals />} />
             <Route path="/proposals/:id" element={<ProposalDetail />} />
             <Route path="/txs" element={<Transactions />} />
             <Route path="/txs/:hash" element={<TransactionDetail />} />
+            <Route path="/ibc-transfers" element={<IBCTransfers />} />
             <Route path="/accounts" element={<Accounts />} />
             <Route path="/accounts/:address" element={<AccountDetail />} />
             <Route path="/parameters" element={<Parameters />} />

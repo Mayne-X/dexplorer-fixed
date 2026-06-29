@@ -6,6 +6,7 @@ import {
   StargateClient,
 } from '@cosmjs/stargate'
 import { Tendermint37Client, ValidatorsResponse } from '@cosmjs/tendermint-rpc'
+import { LS_RPC_ADDRESS } from '@/utils/constant'
 
 const clientCache = new WeakMap<Tendermint37Client, Promise<StargateClient>>()
 
@@ -23,6 +24,74 @@ export async function getChainId(
 ): Promise<string> {
   const client = await getClient(tmClient)
   return client.getChainId()
+}
+
+export async function getNetworkStatus(tmClient: Tendermint37Client): Promise<{
+  chainId: string
+  blockHeight: number
+  syncHeight: number
+  catchingUp: boolean
+  peered: number
+  blockInterval: string
+}> {
+  // Get tendermint status for sync info
+  const status = await tmClient.status()
+  const chainId = status.nodeInfo.network
+  const syncInfo = status.syncInfo
+
+  // Block height from sync info
+  const blockHeight = Number(syncInfo.latestBlockHeight)
+
+  // Calculate block interval from block timestamps
+  let blockInterval = '< 1s'
+  if (syncInfo.latestBlockTime && syncInfo.earliestBlockTime) {
+    const latestTime = new Date(syncInfo.latestBlockTime.toString()).getTime()
+    const earliestTime = new Date(
+      syncInfo.earliestBlockTime.toString()
+    ).getTime()
+    const interval = (latestTime - earliestTime) / 1000
+    if (interval < 1) {
+      blockInterval = '< 1s'
+    } else {
+      blockInterval = `${interval.toFixed(1)}s`
+    }
+  }
+
+  // Get real peer count from RPC net_info endpoint
+  let peered = 0
+  try {
+    const rpcAddress =
+      typeof window !== 'undefined'
+        ? localStorage.getItem(LS_RPC_ADDRESS)
+        : null
+    if (rpcAddress) {
+      const response = await fetch(rpcAddress, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          jsonrpc: '2.0',
+          id: 'netinfo',
+          method: 'net_info',
+          params: {},
+        }),
+      })
+      const data = await response.json()
+      if (data.result?.n_peers !== undefined) {
+        peered = data.result.n_peers
+      }
+    }
+  } catch {
+    // net_info request failed, leave peered as 0
+  }
+
+  return {
+    chainId,
+    blockHeight,
+    syncHeight: blockHeight,
+    catchingUp: syncInfo.catchingUp,
+    peered,
+    blockInterval,
+  }
 }
 
 export async function getValidators(

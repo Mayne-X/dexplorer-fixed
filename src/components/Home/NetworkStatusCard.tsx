@@ -1,11 +1,22 @@
 import React from 'react'
 import { useTheme } from '@/theme/ThemeProvider'
+import { FiRefreshCw } from 'react-icons/fi'
 
 interface NetworkStatusCardProps {
   isConnected: boolean
+  catchingUp?: boolean
+  syncedHeight?: number
+  peers?: number
+  chainId?: string
 }
 
-const NetworkStatusCard: React.FC<NetworkStatusCardProps> = ({ isConnected }) => {
+const NetworkStatusCard: React.FC<NetworkStatusCardProps> = ({
+  isConnected,
+  catchingUp = false,
+  syncedHeight = 0,
+  peers = 0,
+  chainId = '',
+}) => {
   const { colors } = useTheme()
 
   return (
@@ -25,64 +36,109 @@ const NetworkStatusCard: React.FC<NetworkStatusCardProps> = ({ isConnected }) =>
       </h3>
 
       <div className="space-y-4">
+        {/* Network Health / Sync Status */}
         <div className="flex items-center justify-between">
           <span
             className="text-sm font-medium"
             style={{ color: colors.text.secondary }}
           >
-            Network Health
+            Sync Status
           </span>
           <div className="flex items-center gap-2">
             <div
-              className="w-2 h-2 rounded-full"
+              className="w-2 h-2 rounded-full animate-pulse"
               style={{
-                backgroundColor: isConnected
-                  ? colors.status.success
-                  : colors.status.error,
+                backgroundColor: !isConnected
+                  ? colors.status.error
+                  : catchingUp
+                    ? colors.status.warning
+                    : colors.status.success,
               }}
             ></div>
             <span
               className="text-sm font-semibold"
               style={{
-                color: isConnected
-                  ? colors.status.success
-                  : colors.status.error,
+                color: !isConnected
+                  ? colors.status.error
+                  : catchingUp
+                    ? colors.status.warning
+                    : colors.status.success,
               }}
             >
-              {isConnected ? 'Connected' : 'Disconnected'}
+              {!isConnected
+                ? 'Disconnected'
+                : catchingUp
+                  ? 'Syncing...'
+                  : 'Synced'}
             </span>
           </div>
         </div>
 
+        {/* Block Height */}
         <div className="flex items-center justify-between">
           <span
             className="text-sm font-medium"
             style={{ color: colors.text.secondary }}
           >
-            Consensus
+            Block Height
           </span>
           <span
-            className="text-sm font-semibold"
+            className="text-sm font-semibold font-mono"
             style={{ color: colors.text.primary }}
           >
-            {isConnected ? '99.8%' : 'N/A'}
+            {isConnected ? syncedHeight.toLocaleString() : 'N/A'}
           </span>
         </div>
 
+        {/* Connected Peers */}
         <div className="flex items-center justify-between">
           <span
             className="text-sm font-medium"
             style={{ color: colors.text.secondary }}
           >
-            Uptime
+            Connected Peers
           </span>
           <span
             className="text-sm font-semibold"
             style={{ color: colors.text.primary }}
           >
-            {isConnected ? '99.9%' : 'N/A'}
+            {isConnected ? peers : 'N/A'}
           </span>
         </div>
+
+        {/* Chain ID */}
+        <div className="flex items-center justify-between">
+          <span
+            className="text-sm font-medium"
+            style={{ color: colors.text.secondary }}
+          >
+            Chain ID
+          </span>
+          <span
+            className="text-xs font-mono truncate max-w-[180px]"
+            style={{ color: colors.text.tertiary }}
+            title={isConnected ? chainId : undefined}
+          >
+            {isConnected && chainId ? chainId : 'N/A'}
+          </span>
+        </div>
+
+        {isConnected && (
+          <div
+            className="flex items-center gap-2 pt-2 border-t"
+            style={{ borderColor: colors.border.secondary }}
+          >
+            <FiRefreshCw
+              className="w-4 h-4"
+              style={{ color: colors.status.success }}
+            />
+            <span className="text-xs" style={{ color: colors.text.tertiary }}>
+              {catchingUp
+                ? 'Catching up to consensus'
+                : 'Participating in consensus'}
+            </span>
+          </div>
+        )}
       </div>
     </div>
   )
