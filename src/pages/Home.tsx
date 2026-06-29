@@ -23,13 +23,13 @@ const Home: React.FC = () => {
     <div className="space-y-8">
       {/* Welcome Section */}
       <div className="mb-8">
-        <h1
-          className="text-3xl font-bold tracking-tight mb-2"
-          style={{ color: colors.text.primary }}
-        >
-          Dexplorer Dashboard
+        <h1 className="text-3xl font-bold tracking-tight mb-2 font-heading text-gradient-crypto">
+          Dexplorer
         </h1>
-        <p className="text-lg" style={{ color: colors.text.secondary }}>
+        <p
+          className="text-base font-ui"
+          style={{ color: colors.text.secondary }}
+        >
           Real-time insights into the blockchain network
         </p>
       </div>
@@ -47,8 +47,9 @@ const Home: React.FC = () => {
           }
           icon={FiBox}
           subtitle="Current height"
-          iconColor={colors.status.info}
+          iconColor={colors.primary}
           isLoading={isConnected && latestBlock === null}
+          index={0}
         />
         <StatCard
           title="Active Validators"
@@ -56,13 +57,15 @@ const Home: React.FC = () => {
           icon={FiUsers}
           subtitle="Currently active"
           iconColor={colors.status.success}
+          index={1}
         />
         <StatCard
           title="Total Transactions"
           value={isConnected ? totalTransactions : 'Not Connected'}
           icon={FiActivity}
           subtitle="Transaction count"
-          iconColor={colors.status.warning}
+          iconColor={colors.accent}
+          index={2}
         />
         <StatCard
           title="Block Time"
@@ -70,6 +73,7 @@ const Home: React.FC = () => {
           icon={FiClock}
           subtitle="Latest interval"
           iconColor={colors.status.error}
+          index={3}
         />
       </div>
 

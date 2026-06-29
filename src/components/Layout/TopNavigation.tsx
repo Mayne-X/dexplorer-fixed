@@ -313,13 +313,8 @@ const TopNavigation: React.FC<TopNavigationProps> = ({ onMenuClick }) => {
               variant="ghost"
               size="sm"
               aria-label="Open menu"
-              className="lg:hidden focus:outline-none focus:ring-0 active:outline-none border-0 focus:border-0 active:border-0"
-              style={{
-                color: colors.text.primary,
-                outline: 'none',
-                border: 'none',
-                boxShadow: 'none',
-              }}
+              className="lg:hidden"
+              style={{ color: colors.text.primary }}
             >
               <FiMenu className="h-5 w-5" />
             </Button>
@@ -414,13 +409,8 @@ const TopNavigation: React.FC<TopNavigationProps> = ({ onMenuClick }) => {
                   variant="ghost"
                   size="sm"
                   title={t('app.connect')}
-                  className="text-sm focus:outline-none focus:ring-0 active:outline-none border-0 focus:border-0 active:border-0"
-                  style={{
-                    color: colors.text.primary,
-                    outline: 'none',
-                    border: 'none',
-                    boxShadow: 'none',
-                  }}
+                  className="text-sm"
+                  style={{ color: colors.text.primary }}
                 >
                   <FiRefreshCcw className="h-4 w-4" />
                   <span className="hidden md:inline ml-1">
@@ -437,13 +427,7 @@ const TopNavigation: React.FC<TopNavigationProps> = ({ onMenuClick }) => {
                   size="sm"
                   aria-label="Disconnect from RPC"
                   title="Disconnect from RPC"
-                  className="focus:outline-none focus:ring-0 active:outline-none border-0 focus:border-0 active:border-0"
-                  style={{
-                    color: colors.status.error,
-                    outline: 'none',
-                    border: 'none',
-                    boxShadow: 'none',
-                  }}
+                  style={{ color: colors.status.error }}
                 >
                   <FiLogOut className="h-4 w-4" />
                 </Button>
@@ -459,13 +443,7 @@ const TopNavigation: React.FC<TopNavigationProps> = ({ onMenuClick }) => {
               title={`Switch to ${
                 colorScheme === 'light' ? 'dark' : 'light'
               } mode`}
-              className="focus:outline-none focus:ring-0 active:outline-none border-0 focus:border-0 active:border-0"
-              style={{
-                outline: 'none',
-                border: 'none',
-                boxShadow: 'none',
-                color: colors.text.primary,
-              }}
+              style={{ color: colors.text.primary }}
             >
               {colorScheme === 'dark' ? (
                 <FiSun className="h-4 w-4" />
@@ -481,7 +459,7 @@ const TopNavigation: React.FC<TopNavigationProps> = ({ onMenuClick }) => {
       {isRPCModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div
-            className="bg-white rounded-lg shadow-lg w-full max-w-md mx-4 p-6"
+            className="rounded-lg shadow-lg w-full max-w-md mx-4 p-6"
             style={{
               backgroundColor: colors.background,
               color: colors.text.primary,

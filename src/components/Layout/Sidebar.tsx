@@ -67,18 +67,28 @@ const Sidebar: React.FC<SidebarProps> = ({
         boxShadow: colors.shadow.sm,
       }}
     >
-      {/* Logo with improved styling */}
+      {/* Logo with Orbitron heading font */}
       <div className="flex h-16 shrink-0 items-center">
         <div className="flex items-center gap-3">
           <div
-            className="w-8 h-8 rounded-lg flex items-center justify-center"
-            style={{ backgroundColor: colors.primary }}
+            className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
+            style={{
+              background: `linear-gradient(135deg, ${colors.primary}, ${colors.accent})`,
+              boxShadow: `0 4px 12px ${colors.primary}40`,
+            }}
           >
-            <span className="text-white font-bold text-lg">D</span>
+            <span className="text-white font-bold text-base font-heading">
+              D
+            </span>
           </div>
           <h1
-            className="text-xl font-bold tracking-tight"
-            style={{ color: colors.text.primary }}
+            className="text-base font-bold tracking-wide font-heading"
+            style={{
+              background: `linear-gradient(135deg, ${colors.primary} 0%, ${colors.accent} 100%)`,
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+            }}
           >
             Dexplorer
           </h1>
@@ -149,35 +159,28 @@ const Sidebar: React.FC<SidebarProps> = ({
                       to={item.href}
                       onClick={handleMobileLinkClick}
                       className={cn(
-                        'group flex gap-x-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 relative',
-                        isActive ? 'shadow-sm' : 'hover:translate-x-1'
+                        'group flex gap-x-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 relative font-ui',
+                        !isActive &&
+                          'hover:bg-[var(--color-background-secondary)] hover:text-[var(--color-text-primary)] hover:translate-x-1'
                       )}
                       style={{
                         backgroundColor: isActive
-                          ? colors.primary
-                          : 'transparent',
+                          ? `${colors.primary}18`
+                          : undefined,
                         color: isActive
-                          ? colors.text.inverse
-                          : colors.text.primary,
-                      }}
-                      onMouseEnter={(e) => {
-                        if (!isActive) {
-                          e.currentTarget.style.backgroundColor =
-                            colors.backgroundSecondary
-                          e.currentTarget.style.transform = 'translateX(4px)'
-                        }
-                      }}
-                      onMouseLeave={(e) => {
-                        if (!isActive) {
-                          e.currentTarget.style.backgroundColor = 'transparent'
-                          e.currentTarget.style.transform = 'translateX(0)'
-                        }
+                          ? colors.primary
+                          : colors.text.secondary,
+                        border: isActive
+                          ? `1px solid ${colors.primary}30`
+                          : '1px solid transparent',
                       }}
                     >
                       {isActive && (
                         <div
-                          className="absolute left-0 top-0 bottom-0 w-1 rounded-r-full"
-                          style={{ backgroundColor: colors.text.inverse }}
+                          className="absolute left-0 top-1 bottom-1 w-0.5 rounded-r-full"
+                          style={{
+                            background: `linear-gradient(180deg, ${colors.primary}, ${colors.accent})`,
+                          }}
                         />
                       )}
                       <item.icon className="h-5 w-5 shrink-0" />
@@ -203,19 +206,8 @@ const Sidebar: React.FC<SidebarProps> = ({
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={handleMobileLinkClick}
-                    className="group flex gap-x-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 hover:translate-x-1"
-                    style={{
-                      color: colors.text.primary,
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor =
-                        colors.backgroundSecondary
-                      e.currentTarget.style.transform = 'translateX(4px)'
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = 'transparent'
-                      e.currentTarget.style.transform = 'translateX(0)'
-                    }}
+                    className="group flex gap-x-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 hover:translate-x-1 hover:bg-[var(--color-background-secondary)]"
+                    style={{ color: colors.text.primary }}
                   >
                     <item.icon className="h-5 w-5 shrink-0" />
                     {item.name}
