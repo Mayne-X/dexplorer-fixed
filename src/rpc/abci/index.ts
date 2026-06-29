@@ -30,12 +30,23 @@ import {
   QueryParamsResponse as QuerySlashingParamsResponse,
 } from 'cosmjs-types/cosmos/slashing/v1beta1/query'
 
+// Cache QueryClient instances per Tendermint37Client to avoid creating a new one for every query
+// This improves performance significantly when making many ABCI queries
+const queryClientCache = new WeakMap<Tendermint37Client, QueryClient>()
+
+function getQueryClient(tmClient: Tendermint37Client): QueryClient {
+  if (!queryClientCache.has(tmClient)) {
+    queryClientCache.set(tmClient, new QueryClient(tmClient))
+  }
+  return queryClientCache.get(tmClient)!
+}
+
 export async function queryActiveValidators(
   tmClient: Tendermint37Client,
   page: number,
   perPage: number
 ): Promise<QueryValidatorsResponse> {
-  const queryClient = new QueryClient(tmClient)
+  const queryClient = getQueryClient(tmClient)
   const req = QueryValidatorsRequest.encode({
     status: 'BOND_STATUS_BONDED',
     pagination: PageRequest.fromJSON({
@@ -56,7 +67,7 @@ export async function queryValidators(
   page: number,
   perPage: number
 ): Promise<QueryValidatorsResponse> {
-  const queryClient = new QueryClient(tmClient)
+  const queryClient = getQueryClient(tmClient)
   const validatorsRequest = QueryValidatorsRequest.fromPartial({
     pagination: PageRequest.fromJSON({
       offset: page * perPage,
@@ -75,7 +86,7 @@ export async function queryValidators(
 export async function queryStakingPool(
   tmClient: Tendermint37Client
 ): Promise<QueryPoolResponse> {
-  const queryClient = new QueryClient(tmClient)
+  const queryClient = getQueryClient(tmClient)
   const req = QueryPoolRequest.encode({}).finish()
   const { value } = await queryClient.queryAbci(
     '/cosmos.staking.v1beta1.Query/Pool',
@@ -89,7 +100,7 @@ export async function queryProposals(
   page: number,
   perPage: number
 ): Promise<QueryProposalsResponse> {
-  const queryClient = new QueryClient(tmClient)
+  const queryClient = getQueryClient(tmClient)
   const proposalsRequest = QueryProposalsRequest.fromPartial({
     pagination: PageRequest.fromJSON({
       offset: page * perPage,
@@ -110,7 +121,7 @@ export async function queryProposalById(
   tmClient: Tendermint37Client,
   proposalId: number
 ): Promise<QueryProposalResponse> {
-  const queryClient = new QueryClient(tmClient)
+  const queryClient = getQueryClient(tmClient)
   const req = QueryProposalRequest.encode({
     proposalId: BigInt(proposalId),
   }).finish()
@@ -124,7 +135,7 @@ export async function queryProposalById(
 export async function queryStakingParams(
   tmClient: Tendermint37Client
 ): Promise<QueryStakingParamsResponse> {
-  const queryClient = new QueryClient(tmClient)
+  const queryClient = getQueryClient(tmClient)
   const req = QueryStakingParamsRequest.encode({}).finish()
   const { value } = await queryClient.queryAbci(
     '/cosmos.staking.v1beta1.Query/Params',
@@ -136,7 +147,7 @@ export async function queryStakingParams(
 export async function queryMintParams(
   tmClient: Tendermint37Client
 ): Promise<QueryMintParamsResponse> {
-  const queryClient = new QueryClient(tmClient)
+  const queryClient = getQueryClient(tmClient)
   const req = QueryMintParamsRequest.encode({}).finish()
   const { value } = await queryClient.queryAbci(
     '/cosmos.mint.v1beta1.Query/Params',
@@ -149,7 +160,7 @@ export async function queryGovParams(
   tmClient: Tendermint37Client,
   paramsType: string
 ): Promise<QueryGovParamsResponse> {
-  const queryClient = new QueryClient(tmClient)
+  const queryClient = getQueryClient(tmClient)
   const req = QueryGovParamsRequest.encode({
     paramsType: paramsType,
   }).finish()
@@ -163,7 +174,7 @@ export async function queryGovParams(
 export async function queryDistributionParams(
   tmClient: Tendermint37Client
 ): Promise<QueryDistributionParamsResponse> {
-  const queryClient = new QueryClient(tmClient)
+  const queryClient = getQueryClient(tmClient)
   const req = QueryDistributionParamsRequest.encode({}).finish()
   const { value } = await queryClient.queryAbci(
     '/cosmos.distribution.v1beta1.Query/Params',
@@ -175,7 +186,7 @@ export async function queryDistributionParams(
 export async function querySlashingParams(
   tmClient: Tendermint37Client
 ): Promise<QuerySlashingParamsResponse> {
-  const queryClient = new QueryClient(tmClient)
+  const queryClient = getQueryClient(tmClient)
   const req = QuerySlashingParamsRequest.encode({}).finish()
   const { value } = await queryClient.queryAbci(
     '/cosmos.slashing.v1beta1.Query/Params',

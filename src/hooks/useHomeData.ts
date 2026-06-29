@@ -18,11 +18,23 @@ export const useHomeData = () => {
   const persistentBlocks = useSelector(selectBlocks)
   const txEvent = useSelector(selectTxEvent)
   
-  const [isLoading, setIsLoading] = useState(true)
+  // Count transactions - this counter resets to 0 whenever the client disconnects
+  // We track the previous count so we can detect when txEvent actually increments
   const [totalTransactions, setTotalTransactions] = useState(0)
   const [blockTime, setBlockTime] = useState('--')
 
   const isConnected = connectState
+
+  // Track loading state - starts true and stays until we get first block data
+  const [isLoading, setIsLoading] = useState(true)
+
+  // Reset transaction counter when connection state changes to disconnected
+  // This prevents the counter from just keeps incrementing on every page load
+  useEffect(() => {
+    if (!isConnected) {
+      setTotalTransactions(0)
+    }
+  }, [isConnected])
 
   // Real blockchain data - get latest block from persistent blocks
   const latestBlock =
